@@ -1,1 +1,5 @@
 @import 'tailwindcss';
+@import '../../../design-system/tokens.css';
+@import '../../../design-system/prototype-utils.css';
+@import './styles/shell.css';
+@import './styles/components-settings.css';

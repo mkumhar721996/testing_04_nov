@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "devloop": "pnpm typecheck && pnpm test",
+    "migrate": "tsx src/database/migrate.ts",
     "e2e": "playwright test"
   },
   "dependencies": {

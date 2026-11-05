@@ -72,8 +72,8 @@
   --z-backdrop: 30;
   --z-overlay: 40;
   --z-toast: 50;
-  --duration-fast: [object Object];
-  --duration-spin: [object Object];
+  --duration-fast: 150ms;
+  --duration-spin: 800ms;
   --shadow-md: 0px 4px 12px 0px rgb(6.67% 9.41% 15.29% / 0.15);
   --touch-target-min: 44px; /** Minimum tap target size */
   --button-primary-background: var(--color-primary);
