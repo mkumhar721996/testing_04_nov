@@ -1,1 +1,3 @@
+@import '../../../design-system/tokens.css';
+@import '../../../design-system/prototype-utils.css';
 @import 'tailwindcss';
