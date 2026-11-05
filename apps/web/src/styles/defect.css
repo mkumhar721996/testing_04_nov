@@ -1,0 +1,48 @@
+/* Classes the design system does not define, built on its tokens (copied from the approved prototype). */
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.page-head h1 { overflow-wrap: anywhere; }
+.page-head > * { min-width: 0; }
+.comment { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); }
+.comment-body { white-space: pre-line; overflow-wrap: anywhere; }
+.comment-reason { border-left: var(--border-width-strong) solid var(--color-border-strong); padding-left: var(--space-2); }
+.actions { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
+
+.shell { min-height: 100vh; display: flex; flex-direction: column; max-width: 100%; }
+.shell-header {
+  position: sticky; top: 0; z-index: var(--z-shell-header);
+  display: flex; align-items: center; gap: var(--space-2);
+  min-height: var(--shell-header-height); padding: 0 var(--space-3);
+  background: var(--color-surface); border-bottom: var(--border-width) solid var(--color-border);
+}
+.shell-brand { font-weight: var(--font-weight-bold); font-size: var(--font-size-lg); color: var(--color-fg); text-decoration: none; margin-right: auto; }
+.shell-header .btn, .shell-brand {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: var(--touch-target-min); min-width: var(--touch-target-min);
+}
+.shell-brand { padding: 0 var(--space-2); }
+.shell-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.shell-nav { display: none; padding: var(--space-2); background: var(--color-bg-subtle); border-bottom: var(--border-width) solid var(--color-border); }
+.shell-nav.is-open { display: block; }
+.shell-nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.shell-nav a {
+  display: flex; align-items: center; min-height: var(--touch-target-min);
+  padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+  color: var(--color-fg); text-decoration: none; font-weight: var(--font-weight-medium);
+}
+.shell-nav a:hover { background: var(--color-surface); }
+.shell-nav a[aria-current="page"] { background: var(--color-primary); color: var(--color-on-primary); }
+.shell-content { flex: 1; min-width: 0; width: 100%; max-width: var(--content-max-width); margin: 0 auto; padding: var(--space-3); }
+.shell-footer {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); justify-content: space-between;
+  padding: var(--space-3); border-top: var(--border-width) solid var(--color-border);
+  color: var(--color-fg-muted); font-size: var(--font-size-sm);
+}
+@media (min-width: 768px) {
+  .shell-header .shell-menu-btn { display: none; }
+  .shell-body { flex-direction: row; }
+  .shell-nav, .shell-nav.is-open {
+    display: block; flex: none; width: var(--sidebar-width); padding: var(--space-3);
+    border-bottom: 0; border-right: var(--border-width) solid var(--color-border);
+  }
+  .shell-content { padding: var(--space-4); }
+}
