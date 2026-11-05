@@ -1,0 +1,20 @@
+version: 1
+components:
+  comp_web_app:
+    name: Web App
+    kind: web_ui
+  comp_core_api:
+    name: Core API
+    kind: api_service
+  comp_relational_database:
+    name: Relational Database
+    kind: infrastructure
+  comp_background_worker:
+    name: Background Worker
+    kind: worker
+  comp_authentication_service:
+    name: Authentication Service
+    kind: managed_service
+  comp_email_service:
+    name: Email Service
+    kind: managed_service
