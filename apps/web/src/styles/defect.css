@@ -1,5 +1,8 @@
 /* Classes the design system does not define, built on its tokens (copied from the approved prototype). */
-.page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center; text-align: center; gap: var(--space-3); }
+.owner-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.owner-name { display: inline-flex; align-items: center; gap: var(--space-2); }
+.menu .btn { width: 100%; justify-content: flex-start; min-height: var(--touch-target-min); }
 .page-head h1 { overflow-wrap: anywhere; }
 .page-head > * { min-width: 0; }
 .comment { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); }

@@ -30,6 +30,12 @@ export interface DefectDetail {
   ownerName: string | null;
   comments: DefectComment[];
   availableMoves: StatusMove[];
+  canSetOwner: boolean;
+}
+
+export interface Developer {
+  id: string;
+  name: string;
 }
 
 export type MoveResult =
@@ -48,13 +54,16 @@ export async function getDefect(id: string): Promise<DefectDetail> {
   return res.json();
 }
 
-export async function postMove(
-  id: string,
-  body: { to: Status; expectedVersion: number; reason?: string },
-): Promise<MoveResult> {
+export async function getDevelopers(): Promise<Developer[]> {
+  const res = await fetch(url('/developers'));
+  if (!res.ok) throw new Error('failed');
+  return res.json();
+}
+
+async function send(path: string, method: string, body: unknown): Promise<MoveResult> {
   try {
-    const res = await fetch(url(`/defects/${encodeURIComponent(id)}/status-moves`), {
-      method: 'POST',
+    const res = await fetch(url(path), {
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
@@ -66,4 +75,18 @@ export async function postMove(
   } catch {
     return { kind: 'error' };
   }
+}
+
+export function postMove(
+  id: string,
+  body: { to: Status; expectedVersion: number; reason?: string },
+): Promise<MoveResult> {
+  return send(`/defects/${encodeURIComponent(id)}/status-moves`, 'POST', body);
+}
+
+export function putOwner(
+  id: string,
+  body: { ownerId: string | null; expectedVersion: number },
+): Promise<MoveResult> {
+  return send(`/defects/${encodeURIComponent(id)}/owner`, 'PUT', body);
 }

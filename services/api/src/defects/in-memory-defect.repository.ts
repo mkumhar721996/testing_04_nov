@@ -47,4 +47,17 @@ export class InMemoryDefectRepository implements DefectRepository {
     }
     return true;
   }
+
+  async setOwner(
+    id: string,
+    expectedVersion: number,
+    owner: { id: string; name: string } | null,
+  ) {
+    const d = this.defects.get(id);
+    if (!d || d.rowVersion !== expectedVersion) return false;
+    d.ownerId = owner?.id ?? null;
+    d.ownerName = owner?.name ?? null;
+    d.rowVersion += 1;
+    return true;
+  }
 }

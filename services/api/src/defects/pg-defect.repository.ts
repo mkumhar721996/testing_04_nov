@@ -79,6 +79,18 @@ export class PgDefectRepository implements DefectRepository {
       client.release();
     }
   }
+
+  async setOwner(
+    id: string,
+    expectedVersion: number,
+    owner: { id: string; name: string } | null,
+  ): Promise<boolean> {
+    const updated = await this.pool.query(
+      'UPDATE defects SET owner_id = $3, owner_name = $4, row_version = row_version + 1, updated_at = now() WHERE id = $1 AND row_version = $2',
+      [id, expectedVersion, owner?.id ?? null, owner?.name ?? null],
+    );
+    return updated.rowCount === 1;
+  }
 }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

@@ -40,4 +40,25 @@ export interface DefectRepository {
     to: Status,
     comment?: NewComment,
   ): Promise<boolean>;
+  /**
+   * Atomic, version-checked: sets owner_id/owner_name (both null to remove) and bumps
+   * row_version. Returns false when the version had changed. Never touches status.
+   */
+  setOwner(
+    id: string,
+    expectedVersion: number,
+    owner: { id: string; name: string } | null,
+  ): Promise<boolean>;
+}
+
+export const USER_DIRECTORY = 'USER_DIRECTORY';
+
+export interface DirectoryUser {
+  id: string;
+  name: string;
+}
+
+export interface UserDirectory {
+  listDevelopers(): Promise<DirectoryUser[]>;
+  findDeveloper(id: string): Promise<DirectoryUser | null>;
 }
