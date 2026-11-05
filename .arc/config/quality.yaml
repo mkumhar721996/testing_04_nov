@@ -1,0 +1,38 @@
+# Starter quality gates from `arc-quality init` -- edit freely. Each stage lists check ids;
+# `arc-quality plan --stage <stage>` shows what a stage will run. The duplication guards
+# (ADR-0148) start advisory: seed a guard's ledger, then remove its `severity: advisory`.
+version: 1
+base_branch: main
+structure:
+  roots: &id001
+  - apps
+  layers:
+  - name: project
+    paths:
+    - apps/**
+stages:
+  devloop:
+  - canonical-helpers
+  - module-purpose-doc
+  - reuse-catalog-freshness
+  - secrets
+  ci:
+  - duplication
+checks:
+  canonical-helpers:
+    severity: advisory
+  module-purpose-doc:
+    severity: advisory
+  reuse-catalog-freshness:
+    severity: advisory
+    settings:
+      catalogs:
+      - name: capability-index
+        generator: arc_quality.capability_index:expected_files
+        output: docs/CAPABILITY-INDEX.md
+        compare_mode: row-keyed
+        regenerate: arc-quality index --write
+  duplication:
+    severity: advisory
+    settings:
+      roots: *id001
