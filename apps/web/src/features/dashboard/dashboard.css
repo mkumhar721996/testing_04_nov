@@ -1,0 +1,39 @@
+/* Dashboard styles on design-system tokens, ported from the approved prototype's own style block.
+   The card-slot size and the nav breakpoint have no design-system token yet (design-system defect
+   to be raised); they stay as named local properties until they do. */
+.page {
+  --dashboard-card-slot-width: min(360px, 100%);
+  --dashboard-card-slot-min-height: 200px;
+  min-height: 100vh;
+}
+.wrap { max-width: var(--content-max-width); margin: 0 auto; padding: 0 var(--space-3); }
+.topbar { background: var(--color-surface); border-bottom: var(--border-width) solid var(--color-border); }
+.topbar-inner { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); min-height: var(--shell-header-height); }
+.logo { font-size: var(--font-size-lg); margin-right: auto; }
+.main-nav { order: 3; width: 100%; display: flex; gap: var(--space-1); overflow-x: auto; padding-bottom: var(--space-1); }
+.main-nav > * { flex: none; min-height: var(--touch-target-min); }
+.top-actions { display: flex; align-items: center; gap: var(--space-2); }
+.top-actions .btn, .avatar-btn { min-width: var(--touch-target-min); min-height: var(--touch-target-min); }
+.avatar-btn { padding: 0; background: transparent; border: 0; cursor: pointer; border-radius: var(--radius-full); }
+.soon { font-size: var(--font-size-sm); }
+.btn-pending { min-height: var(--touch-target-min); }
+svg.icon { width: var(--icon-size); height: var(--icon-size); fill: none; stroke: currentColor; stroke-width: var(--border-width-strong); }
+/* 900px: a custom property cannot be used in a media query. */
+@media (min-width: 900px) {
+  .logo { margin-right: 0; flex: 1; }
+  .main-nav { order: 0; width: auto; padding-bottom: 0; }
+  .top-actions { flex: 1; justify-content: flex-end; }
+}
+.hero { background: var(--color-warning-bg); color: var(--color-fg); padding: var(--space-4) 0 var(--space-5); }
+.hero-inner { display: grid; gap: var(--space-4); align-items: center; }
+@media (min-width: 768px) { .hero-inner { grid-template-columns: 1fr auto; } }
+.hero-title { margin: 0; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); overflow-wrap: anywhere; }
+.hero p { margin: 0; }
+.card-slot { width: var(--dashboard-card-slot-width); min-height: var(--dashboard-card-slot-min-height); }
+.card-visual { background: var(--color-overlay); color: var(--color-on-primary); border-radius: var(--radius-lg); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); box-shadow: var(--shadow-md); min-height: var(--dashboard-card-slot-min-height); box-sizing: border-box; }
+.card-row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+.card-balance { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); }
+.card-panel { background: var(--color-surface); color: var(--color-fg); border-radius: var(--radius-lg); padding: var(--space-4); min-height: var(--dashboard-card-slot-min-height); box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-2); justify-content: center; }
+.card-panel h2 { margin: 0; font-size: var(--font-size-lg); }
+.card-panel p { color: var(--color-fg-muted); }
+[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: not-allowed; }
