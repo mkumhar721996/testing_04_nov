@@ -11,7 +11,10 @@ interface Props {
 }
 
 export function StatusMovesCard({ status, moves, disabled, onChoose }: Props) {
-  const primaryTo = moves.find((m) => FORWARD.includes(m.to))?.to;
+  // Reopen also targets Triaged and "Record failed fix" also targets In progress; they stay secondary.
+  const isPrimary = (m: StatusMove) =>
+    FORWARD.includes(m.to) || m.label === 'Triage' || m.label === 'Move to In progress';
+  const primaryTo = moves.find(isPrimary)?.to;
   return (
     <section className="card stack-sm" aria-labelledby="status-moves-title">
       <h2 id="status-moves-title">Status moves</h2>
@@ -21,7 +24,7 @@ export function StatusMovesCard({ status, moves, disabled, onChoose }: Props) {
             <button
               key={move.to}
               type="button"
-              className={move.to === primaryTo ? 'btn btn-primary' : 'btn btn-secondary'}
+              className={isPrimary(move) && move.to === primaryTo ? 'btn btn-primary' : 'btn btn-secondary'}
               disabled={disabled}
               onClick={() => onChoose(move)}
             >

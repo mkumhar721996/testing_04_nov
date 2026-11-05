@@ -6,8 +6,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DEFECT_REPOSITORY, DefectRepository } from './defect.repository';
-import { Actor, availableMoves, Status, StatusMove } from './workflow';
+import {
+  DEFECT_REPOSITORY,
+  DefectRepository,
+  USER_DIRECTORY,
+  UserDirectory,
+} from './defect.repository';
+import { Actor, availableMoves, requiresOwner, Status, StatusMove } from './workflow';
 
 export const MAX_REASON_LENGTH = 2000;
 export const CONFLICT_MESSAGE =
@@ -33,6 +38,7 @@ export interface DefectDetail {
   ownerName: string | null;
   comments: { id: string; authorName: string; body: string; createdAt: Date }[];
   availableMoves: StatusMove[];
+  canSetOwner: boolean;
 }
 
 // Reason comments are stored with the prefix the approved design shows.
@@ -43,7 +49,10 @@ const COMMENT_PREFIX: Partial<Record<Status, string>> = {
 
 @Injectable()
 export class StatusMoveService {
-  constructor(@Inject(DEFECT_REPOSITORY) private readonly repo: DefectRepository) {}
+  constructor(
+    @Inject(DEFECT_REPOSITORY) private readonly repo: DefectRepository,
+    @Inject(USER_DIRECTORY) private readonly users: UserDirectory,
+  ) {}
 
   async view(id: string, actor: Actor): Promise<DefectDetail> {
     const defect = await this.repo.findById(id);
@@ -64,7 +73,35 @@ export class StatusMoveService {
         createdAt,
       })),
       availableMoves: availableMoves(defect, actor),
+      canSetOwner: actor.role === 'Lead',
     };
+  }
+
+  async listDevelopers(actor: Actor) {
+    if (actor.role !== 'Lead') throw new ForbiddenException('Only a Lead can choose owners.');
+    return this.users.listDevelopers();
+  }
+
+  // Same check order as move(): version, permission, validation. Never touches status.
+  async setOwner(
+    id: string,
+    actor: ActorIdentity,
+    req: { ownerId: string | null; expectedVersion: number },
+  ): Promise<DefectDetail> {
+    const defect = await this.repo.findById(id);
+    if (!defect) throw new NotFoundException('Defect not found.');
+    if (req.expectedVersion !== defect.rowVersion) await this.conflict(id, actor);
+    if (actor.role !== 'Lead') throw new ForbiddenException('Only a Lead can set the owner.');
+
+    let owner: { id: string; name: string } | null = null;
+    if (req.ownerId !== null) {
+      owner = await this.users.findDeveloper(req.ownerId);
+      if (!owner) throw new BadRequestException('Choose a user who is a Developer.');
+    }
+
+    const saved = await this.repo.setOwner(id, req.expectedVersion, owner);
+    if (!saved) await this.conflict(id, actor);
+    return this.view(id, actor);
   }
 
   // Check order matters: version first (a stale client learns the current status), then
@@ -76,6 +113,9 @@ export class StatusMoveService {
 
     const move = availableMoves(defect, actor).find((m) => m.to === req.to);
     if (!move) throw new ForbiddenException('That status move is not available to you.');
+
+    if (requiresOwner(defect.status, move.to) && !defect.ownerId)
+      throw new BadRequestException('Set an owner before moving this defect to In progress.');
 
     let comment;
     if (move.requiresReason) {

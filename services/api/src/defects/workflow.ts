@@ -27,8 +27,15 @@ interface Rule extends StatusMove {
 const isLead = (_d: unknown, a: Actor) => a.role === 'Lead';
 const isTester = (_d: unknown, a: Actor) => a.role === 'Tester';
 
-// Triage (New -> Triaged, Triaged -> In progress) belongs to the owner story.
 const RULES: Rule[] = [
+  { from: 'New', to: 'Triaged', label: 'Triage', requiresReason: false, allowed: isLead },
+  {
+    from: 'Triaged',
+    to: 'In progress',
+    label: 'Move to In progress',
+    requiresReason: false,
+    allowed: (d, a) => a.role === 'Lead' || (d.ownerId !== null && d.ownerId === a.id),
+  },
   { from: 'Triaged', to: 'Rejected', label: 'Reject', requiresReason: true, allowed: isLead },
   {
     from: 'In progress',
@@ -48,6 +55,9 @@ const RULES: Rule[] = [
   { from: 'Verified', to: 'Closed', label: 'Close', requiresReason: false, allowed: isLead },
   { from: 'Closed', to: 'Triaged', label: 'Reopen', requiresReason: true, allowed: isLead },
 ];
+
+/** Every move into In progress needs an owner, so someone is accountable for the work. */
+export const requiresOwner = (_from: Status, to: Status) => to === 'In progress';
 
 export function availableMoves(
   defect: { status: Status; ownerId: string | null },

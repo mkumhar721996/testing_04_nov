@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InMemoryDefectRepository } from './in-memory-defect.repository';
+import { InMemoryUserDirectory } from './in-memory-user-directory';
 import { ActorIdentity, StatusMoveService } from './status-move.service';
 import { Status } from './workflow';
 
@@ -15,7 +16,13 @@ const owner: ActorIdentity = { id: 'd1', name: 'Dev Rao', role: 'Developer' };
 
 function setup(status: Status, ownerId: string | null = 'd1') {
   const repo = new InMemoryDefectRepository();
-  const svc = new StatusMoveService(repo);
+  const users = new InMemoryUserDirectory([
+    { id: 'd1', name: 'Dev Rao', role: 'Developer' },
+    { id: 'd2', name: 'Dev Two', role: 'Developer' },
+    { id: 't1', name: 'Tess Tester', role: 'Tester' },
+    { id: 'l1', name: 'Lead A.', role: 'Lead' },
+  ]);
+  const svc = new StatusMoveService(repo, users);
   const { id } = repo.seed({ status, ownerId, ownerName: ownerId ? 'Dev Rao' : null });
   return { repo, svc, id };
 }
@@ -146,5 +153,94 @@ describe('StatusMoveService', () => {
     await expect(
       svc.move(id, tester, { to: 'Verified', expectedVersion: 1 }),
     ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  describe('owners and triage', () => {
+    it('sets an owner on a defect with none (AC1)', async () => {
+      const { svc, id } = setup('New', null);
+      const out = await svc.setOwner(id, lead, { ownerId: 'd1', expectedVersion: 1 });
+      expect(out.ownerId).toBe('d1');
+      expect(out.ownerName).toBe('Dev Rao');
+      expect(out.status).toBe('New');
+      expect(out.canSetOwner).toBe(true);
+    });
+
+    it('changes the owner and keeps exactly one (AC2, AC4)', async () => {
+      const { svc, id } = setup('Triaged', 'd1');
+      const out = await svc.setOwner(id, lead, { ownerId: 'd2', expectedVersion: 1 });
+      expect(out.ownerName).toBe('Dev Two');
+      expect(out.ownerId).toBe('d2');
+      expect(out.status).toBe('Triaged');
+    });
+
+    it('offers only Developers and refuses others (AC3)', async () => {
+      const { svc, id } = setup('Triaged', null);
+      expect((await svc.listDevelopers(lead)).map((d) => d.id)).toEqual(['d1', 'd2']);
+      await expect(svc.listDevelopers(tester)).rejects.toBeInstanceOf(ForbiddenException);
+      await expect(
+        svc.setOwner(id, lead, { ownerId: 't1', expectedVersion: 1 }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+    });
+
+    it.each([null, 'd1'])('triages New with owner %j (AC5, AC6)', async (ownerId) => {
+      const { svc, id } = setup('New', ownerId);
+      const out = await svc.move(id, lead, { to: 'Triaged', expectedVersion: 1 });
+      expect(out.status).toBe('Triaged');
+    });
+
+    it('keeps Triaged when there is no owner (AC7)', async () => {
+      const { repo, svc, id } = setup('Triaged', null);
+      await expect(
+        svc.move(id, lead, { to: 'In progress', expectedVersion: 1 }),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      const d = (await repo.findById(id))!;
+      expect(d.status).toBe('Triaged');
+      expect(d.rowVersion).toBe(1);
+    });
+
+    it('moves Triaged with an owner to In progress (AC8)', async () => {
+      const { svc, id } = setup('Triaged', 'd1');
+      expect((await svc.move(id, lead, { to: 'In progress', expectedVersion: 1 })).status).toBe(
+        'In progress',
+      );
+    });
+
+    it('keeps In progress when the owner changes (AC9)', async () => {
+      const { svc, id } = setup('In progress', 'd1');
+      const out = await svc.setOwner(id, lead, { ownerId: 'd2', expectedVersion: 1 });
+      expect(out.status).toBe('In progress');
+      expect(out.ownerId).toBe('d2');
+    });
+
+    it('keeps In progress when the owner is removed (AC10)', async () => {
+      const { svc, id } = setup('In progress', 'd1');
+      const out = await svc.setOwner(id, lead, { ownerId: null, expectedVersion: 1 });
+      expect(out.status).toBe('In progress');
+      expect(out.ownerId).toBeNull();
+      expect(out.ownerName).toBeNull();
+    });
+
+    it('refuses a stale owner change and writes nothing', async () => {
+      const { repo, svc, id } = setup('Triaged', 'd1');
+      await expect(
+        svc.setOwner(id, lead, { ownerId: 'd2', expectedVersion: 7 }),
+      ).rejects.toBeInstanceOf(ConflictException);
+      expect((await repo.findById(id))!.ownerId).toBe('d1');
+    });
+
+    it.each([tester, owner])('forbids a non-Lead setting the owner', async (actor) => {
+      const { repo, svc, id } = setup('Triaged', 'd1');
+      await expect(
+        svc.setOwner(id, actor, { ownerId: 'd2', expectedVersion: 1 }),
+      ).rejects.toBeInstanceOf(ForbiddenException);
+      expect((await repo.findById(id))!.rowVersion).toBe(1);
+    });
+
+    it('404s for an unknown defect', async () => {
+      const { svc } = setup('Triaged');
+      await expect(
+        svc.setOwner('missing', lead, { ownerId: 'd1', expectedVersion: 1 }),
+      ).rejects.toBeInstanceOf(NotFoundException);
+    });
   });
 });

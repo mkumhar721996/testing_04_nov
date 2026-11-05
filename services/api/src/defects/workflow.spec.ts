@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { availableMoves, Actor, Role, Status } from './workflow';
+import { availableMoves, requiresOwner, Actor, Role, Status } from './workflow';
 
 const lead: Actor = { id: 'l1', role: 'Lead' };
 const tester: Actor = { id: 't1', role: 'Tester' };
@@ -10,8 +10,8 @@ const tos = (status: Status, actor: Actor, ownerId: string | null = 'd1') =>
 
 describe('availableMoves', () => {
   it('offers only the moves defined for the status (AC1)', () => {
-    expect(tos('Triaged', lead, null)).toEqual(['Rejected']);
-    expect(tos('New', lead, null)).toEqual([]);
+    expect(tos('Triaged', lead, null)).toEqual(['In progress', 'Rejected']);
+    expect(tos('New', lead, null)).toEqual(['Triaged']);
     expect(tos('Verified', lead)).toEqual(['Closed']);
     expect(tos('Closed', lead)).toEqual(['Triaged']);
     expect(tos('Resolved', lead)).toEqual(['In progress']);
@@ -54,9 +54,35 @@ describe('availableMoves', () => {
   });
 
   it('marks reject and reopen as needing a reason', () => {
-    const [reject] = availableMoves({ status: 'Triaged', ownerId: null }, lead);
+    const reject = availableMoves({ status: 'Triaged', ownerId: null }, lead).find(
+      (m) => m.to === 'Rejected',
+    );
     const [reopen] = availableMoves({ status: 'Closed', ownerId: null }, lead);
     expect(reject).toMatchObject({ label: 'Reject', requiresReason: true });
     expect(reopen).toMatchObject({ label: 'Reopen', requiresReason: true });
+  });
+
+  it('offers Triage on New with or without an owner, to a Lead only (AC5, AC6)', () => {
+    expect(tos('New', lead, null)).toEqual(['Triaged']);
+    expect(tos('New', lead, 'd1')).toEqual(['Triaged']);
+    expect(tos('New', tester)).toEqual([]);
+    expect(tos('New', owner)).toEqual([]);
+    expect(availableMoves({ status: 'New', ownerId: null }, lead)[0]).toMatchObject({
+      label: 'Triage',
+      requiresReason: false,
+    });
+  });
+
+  it('offers In progress on Triaged to a Lead or the owner (AC8)', () => {
+    expect(tos('Triaged', lead)).toContain('In progress');
+    expect(tos('Triaged', owner)).toContain('In progress');
+    expect(tos('Triaged', other)).not.toContain('In progress');
+    expect(tos('Triaged', tester)).not.toContain('In progress');
+  });
+
+  it('requires an owner for any move into In progress (AC7)', () => {
+    expect(requiresOwner('Triaged', 'In progress')).toBe(true);
+    expect(requiresOwner('Resolved', 'In progress')).toBe(true);
+    expect(requiresOwner('New', 'Triaged')).toBe(false);
   });
 });
