@@ -9,7 +9,7 @@ export default defineConfig({
   webServer: {
     command: 'pnpm build && pnpm start',
     url: `http://localhost:${port}/health`,
-    env: { PORT: String(port) },
+    env: { PORT: String(port), AUTH_DEV_ACTOR: 'true' },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
