@@ -1,0 +1,94 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: #1f2937; /** Primary text */
+  --color-fg-muted: #4b5563; /** Secondary text and hints */
+  --color-bg: #ffffff; /** Page background */
+  --color-bg-subtle: #f3f4f6; /** Sidebar, secondary buttons, skeletons */
+  --color-surface: #ffffff; /** Cards, popups, modals */
+  --color-primary: #2563eb; /** Brand and main action */
+  --color-primary-hover: #1d4ed8; /** Primary hover state */
+  --color-on-primary: #ffffff; /** Text on primary and danger fills */
+  --color-border: #d1d5db; /** Default borders and dividers */
+  --color-border-strong: #6b7280; /** Form control borders */
+  --color-focus: #1d4ed8; /** Focus ring */
+  --color-overlay: #111827; /** Backdrop and tooltip fill */
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fee2e2;
+  --color-success: #166534;
+  --color-success-bg: #dcfce7;
+  --color-warning: #92400e;
+  --color-warning-bg: #fef3c7;
+  --color-info: #1e40af;
+  --color-info-bg: #dbeafe;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 28px;
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --focus-ring-offset: 2px;
+  --control-height-sm: 32px;
+  --control-height-md: 40px;
+  --control-height-lg: 48px;
+  --icon-size: 16px;
+  --avatar-size: 40px;
+  --switch-width: 40px;
+  --switch-height: 24px;
+  --switch-thumb: 18px;
+  --spinner-size: 24px;
+  --skeleton-height: 16px;
+  --sidebar-width: 240px;
+  --shell-header-height: 56px;
+  --drawer-width: 400px;
+  --modal-width: 520px;
+  --toast-width: 320px;
+  --tooltip-max-width: 240px;
+  --menu-min-width: 200px;
+  --content-max-width: 1200px;
+  --grid-min-col: 240px;
+  --font-family-base: Inter, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --line-height-base: 1.5;
+  --opacity-overlay: 0.5;
+  --opacity-disabled: 0.5;
+  --z-dropdown: 10;
+  --z-shell-header: 20;
+  --z-backdrop: 30;
+  --z-overlay: 40;
+  --z-toast: 50;
+  --duration-fast: [object Object];
+  --duration-spin: [object Object];
+  --shadow-md: 0px 4px 12px 0px rgb(6.67% 9.41% 15.29% / 0.15);
+  --touch-target-min: 44px; /** Minimum tap target size */
+  --button-primary-background: var(--color-primary);
+  --button-primary-background-hover: var(--color-primary-hover);
+  --button-primary-foreground: var(--color-on-primary);
+  --button-secondary-background: var(--color-bg-subtle);
+  --button-secondary-foreground: var(--color-fg);
+  --button-secondary-border: var(--color-border-strong);
+  --button-danger-background: var(--color-danger);
+  --button-danger-foreground: var(--color-on-primary);
+  --button-default-radius: var(--radius-md);
+  --button-default-padding-x: var(--space-3);
+  --card-default-background: var(--color-surface);
+  --card-default-foreground: var(--color-fg);
+  --card-default-border: var(--color-border);
+  --card-default-radius: var(--radius-lg);
+  --card-default-padding: var(--space-4);
+}
