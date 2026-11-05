@@ -22,6 +22,12 @@ export class DefectsController {
     return this.moves.view(id, actor);
   }
 
+  @Post(':id/comments')
+  @HttpCode(201)
+  comment(@Param('id') id: string, @CurrentActor() actor: ActorIdentity, @Body() body: unknown) {
+    return this.moves.addComment(id, actor, (body as Record<string, unknown> | undefined)?.text);
+  }
+
   @Post(':id/status-moves')
   @HttpCode(200)
   move(

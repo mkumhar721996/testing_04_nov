@@ -10,6 +10,7 @@ import { DEFECT_REPOSITORY, DefectRepository } from './defect.repository';
 import { Actor, availableMoves, Status, StatusMove } from './workflow';
 
 export const MAX_REASON_LENGTH = 2000;
+export const MAX_COMMENT_LENGTH = 2000;
 export const CONFLICT_MESSAGE =
   'This defect was changed by someone else. Refresh to see its current status, then try again.';
 
@@ -33,6 +34,7 @@ export interface DefectDetail {
   ownerName: string | null;
   comments: { id: string; authorName: string; body: string; createdAt: Date }[];
   availableMoves: StatusMove[];
+  viewerName: string;
 }
 
 // Reason comments are stored with the prefix the approved design shows.
@@ -45,7 +47,7 @@ const COMMENT_PREFIX: Partial<Record<Status, string>> = {
 export class StatusMoveService {
   constructor(@Inject(DEFECT_REPOSITORY) private readonly repo: DefectRepository) {}
 
-  async view(id: string, actor: Actor): Promise<DefectDetail> {
+  async view(id: string, actor: ActorIdentity): Promise<DefectDetail> {
     const defect = await this.repo.findById(id);
     if (!defect) throw new NotFoundException('Defect not found.');
     const comments = await this.repo.listComments(id);
@@ -64,7 +66,20 @@ export class StatusMoveService {
         createdAt,
       })),
       availableMoves: availableMoves(defect, actor),
+      viewerName: actor.name,
     };
+  }
+
+  // Validation runs before any write, so a refused comment leaves the list unchanged.
+  async addComment(id: string, actor: ActorIdentity, text: unknown): Promise<DefectDetail> {
+    if (!(await this.repo.findById(id))) throw new NotFoundException('Defect not found.');
+    const body = typeof text === 'string' ? text.trim() : '';
+    if (!body)
+      throw new BadRequestException('Comment cannot be empty. Enter some text, then post again.');
+    if (body.length > MAX_COMMENT_LENGTH)
+      throw new BadRequestException(`The comment must be at most ${MAX_COMMENT_LENGTH} characters.`);
+    await this.repo.addComment(id, { authorId: actor.id, authorName: actor.name, body });
+    return this.view(id, actor);
   }
 
   // Check order matters: version first (a stale client learns the current status), then
@@ -95,7 +110,7 @@ export class StatusMoveService {
     return this.view(id, actor);
   }
 
-  private async conflict(id: string, actor: Actor): Promise<never> {
+  private async conflict(id: string, actor: ActorIdentity): Promise<never> {
     const defect = await this.view(id, actor);
     throw new ConflictException({
       message: CONFLICT_MESSAGE,

@@ -148,3 +148,64 @@ describe('StatusMoveService', () => {
     ).rejects.toBeInstanceOf(ConflictException);
   });
 });
+
+describe('StatusMoveService.addComment', () => {
+  it('posts a comment shown with its author and viewer name (AC1, AC7)', async () => {
+    const { svc, id } = setup('Triaged');
+    const out = await svc.addComment(id, tester, '  Retest on Chrome 120 ');
+    expect(out.comments.map((c) => c.body)).toEqual(['Retest on Chrome 120']);
+    expect(out.comments[0].authorName).toBe('Tess Tester');
+    expect(out.comments[0].createdAt).toBeInstanceOf(Date);
+    expect(out.viewerName).toBe('Tess Tester');
+  });
+
+  it('lists comments oldest first (AC2)', async () => {
+    vi.useFakeTimers();
+    try {
+      const { svc, id } = setup('Triaged');
+      vi.setSystemTime(new Date('2026-11-05T09:00:00Z'));
+      await svc.addComment(id, tester, 'first');
+      vi.setSystemTime(new Date('2026-11-05T10:00:00Z'));
+      const out = await svc.addComment(id, tester, 'second');
+      expect(out.comments.map((c) => c.body)).toEqual(['first', 'second']);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps a comment on defect A off defect B (AC3)', async () => {
+    const { repo, svc, id: a } = setup('Triaged');
+    const { id: b } = repo.seed({ status: 'New', ownerId: null, ownerName: null });
+    await svc.addComment(a, tester, 'only on A');
+    expect((await svc.view(b, tester)).comments).toEqual([]);
+  });
+
+  it('lists the rejection and reopen reasons as comments (AC4, AC5)', async () => {
+    const r = setup('Triaged', null);
+    await r.svc.move(r.id, lead, { to: 'Rejected', expectedVersion: 1, reason: 'Duplicate of DEF-12' });
+    expect(
+      (await r.svc.view(r.id, lead)).comments.some((c) => c.body.includes('Duplicate of DEF-12')),
+    ).toBe(true);
+    const c = setup('Closed');
+    const out = await c.svc.move(c.id, lead, { to: 'Triaged', expectedVersion: 1, reason: 'Regression in 2.3' });
+    expect(out.comments.some((x) => x.body.includes('Regression in 2.3'))).toBe(true);
+  });
+
+  it.each(['', '   ', '\n\t', undefined, 5])('refuses %j and writes nothing (AC9, AC10)', async (text) => {
+    const { repo, svc, id } = setup('Triaged');
+    await expect(svc.addComment(id, tester, text)).rejects.toBeInstanceOf(BadRequestException);
+    expect(await repo.listComments(id)).toHaveLength(0);
+  });
+
+  it('refuses text over 2000 characters', async () => {
+    const { svc, id } = setup('Triaged');
+    await expect(svc.addComment(id, tester, 'a'.repeat(2001))).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+  });
+
+  it('404s for an unknown defect', async () => {
+    const { svc } = setup('Triaged');
+    await expect(svc.addComment('missing', tester, 'hi')).rejects.toBeInstanceOf(NotFoundException);
+  });
+});

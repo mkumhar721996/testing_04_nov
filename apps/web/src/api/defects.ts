@@ -30,6 +30,7 @@ export interface DefectDetail {
   ownerName: string | null;
   comments: DefectComment[];
   availableMoves: StatusMove[];
+  viewerName: string;
 }
 
 export type MoveResult =
@@ -46,6 +47,26 @@ export async function getDefect(id: string): Promise<DefectDetail> {
   const res = await fetch(url(`/defects/${encodeURIComponent(id)}`));
   if (!res.ok) throw new Error(res.status === 404 ? 'not-found' : 'failed');
   return res.json();
+}
+
+export type CommentResult =
+  | { kind: 'ok'; defect: DefectDetail }
+  | { kind: 'invalid'; message: string }
+  | { kind: 'error' };
+
+export async function postComment(id: string, text: string): Promise<CommentResult> {
+  try {
+    const res = await fetch(url(`/defects/${encodeURIComponent(id)}/comments`), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (res.ok) return { kind: 'ok', defect: await res.json() };
+    if (res.status === 400) return { kind: 'invalid', message: (await res.json()).message };
+    return { kind: 'error' };
+  } catch {
+    return { kind: 'error' };
+  }
 }
 
 export async function postMove(

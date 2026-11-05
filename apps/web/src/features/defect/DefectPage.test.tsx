@@ -23,6 +23,7 @@ const defect = (over: Partial<DefectDetail> = {}): DefectDetail => ({
   ownerName: null,
   comments: [],
   availableMoves: [],
+  viewerName: 'Tess Tester',
   ...over,
 });
 
@@ -104,7 +105,7 @@ describe('DefectPage', () => {
   it('shows an empty comments line', async () => {
     mockFetch(() => json(200, defect()));
     render(<DefectPage id="d-1" />);
-    expect(await screen.findByText('No comments yet.')).toBeInTheDocument();
+    expect(await screen.findByText('No comments yet')).toBeInTheDocument();
   });
 
   it('rejects with a reason: sends the loaded version and re-renders (AC3, AC5)', async () => {

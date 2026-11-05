@@ -2,9 +2,13 @@
 .page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
 .page-head h1 { overflow-wrap: anywhere; }
 .page-head > * { min-width: 0; }
-.comment { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); }
-.comment-body { white-space: pre-line; overflow-wrap: anywhere; }
-.comment-reason { border-left: var(--border-width-strong) solid var(--color-border-strong); padding-left: var(--space-2); }
+.thread { list-style: none; padding: 0; display: flex; flex-direction: column; }
+.comment { display: grid; grid-template-columns: auto 1fr; gap: var(--space-2) var(--space-3); padding: var(--space-3) 0; border-bottom: var(--border-width) solid var(--color-border); }
+.comment:last-child { border-bottom: none; }
+.comment.is-new { background: var(--color-info-bg); border-radius: var(--radius-md); padding-inline: var(--space-3); }
+.comment-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-2); }
+.comment-body { grid-column: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.composer-actions { display: flex; justify-content: flex-end; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
 
 .shell { min-height: 100vh; display: flex; flex-direction: column; max-width: 100%; }

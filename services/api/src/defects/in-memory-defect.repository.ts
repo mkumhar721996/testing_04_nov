@@ -35,6 +35,13 @@ export class InMemoryDefectRepository implements DefectRepository {
     return [...(this.comments.get(defectId) ?? [])];
   }
 
+  async addComment(defectId: string, comment: NewComment) {
+    if (!this.defects.has(defectId)) return null;
+    const record = { id: randomUUID(), createdAt: new Date(), ...comment };
+    this.comments.set(defectId, [...(this.comments.get(defectId) ?? []), record]);
+    return record;
+  }
+
   async moveStatus(id: string, expectedVersion: number, to: Status, comment?: NewComment) {
     const d = this.defects.get(id);
     if (!d || d.rowVersion !== expectedVersion) return false;

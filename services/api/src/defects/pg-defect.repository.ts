@@ -47,6 +47,22 @@ export class PgDefectRepository implements DefectRepository {
     }));
   }
 
+  async addComment(defectId: string, comment: NewComment): Promise<CommentRecord | null> {
+    if (!(await this.findById(defectId))) return null;
+    const { rows } = await this.pool.query(
+      'INSERT INTO defect_comments (defect_id, author_id, author_name, body) VALUES ($1, $2, $3, $4) RETURNING id, author_id, author_name, body, created_at',
+      [defectId, comment.authorId, comment.authorName, comment.body],
+    );
+    const r = rows[0];
+    return {
+      id: r.id,
+      authorId: r.author_id,
+      authorName: r.author_name,
+      body: r.body,
+      createdAt: r.created_at,
+    };
+  }
+
   async moveStatus(
     id: string,
     expectedVersion: number,
