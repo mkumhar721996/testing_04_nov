@@ -13,7 +13,7 @@ export function Hero({ name, card }: { name: string; card: Loadable<CardSummary>
         <div className="stack">
           <p>Track your balance, recent activity, and financial goals.</p>
           <h1 className="hero-title" id="hero-title">
-            Welcome back, {name}!
+            {name ? `Welcome back, ${name}!` : 'Welcome back!'}
           </h1>
           <div className="cluster">
             {pendingActions.map((action) => (
@@ -21,8 +21,7 @@ export function Hero({ name, card }: { name: string; card: Loadable<CardSummary>
                 key={action.id}
                 type="button"
                 className="btn btn-secondary btn-pending"
-                aria-disabled="true"
-                onClick={(e) => e.preventDefault()}
+                disabled
               >
                 {action.label} <span className="badge soon">Coming soon</span>
               </button>

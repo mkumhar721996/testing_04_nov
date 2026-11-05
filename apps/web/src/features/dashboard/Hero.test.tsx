@@ -16,6 +16,11 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Welcome back, Ada!');
   });
 
+  it('omits the stray comma when the profile name is missing', () => {
+    render(<Hero name="" card={card} />);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/^Welcome back!$/);
+  });
+
   it.each(['Deposit', 'Withdraw'])(
     '%s is disabled, labelled Coming soon and starts nothing (AC8, 12, 13)',
     (label) => {
@@ -23,7 +28,7 @@ describe('Hero', () => {
       vi.stubGlobal('fetch', fetchSpy);
       render(<Hero name="Ada" card={card} />);
       const button = screen.getByRole('button', { name: new RegExp(`^${label}`) });
-      expect(button).toHaveAttribute('aria-disabled', 'true');
+      expect(button).toBeDisabled();
       expect(within(button).getByText('Coming soon')).toBeInTheDocument();
 
       fireEvent.click(button);

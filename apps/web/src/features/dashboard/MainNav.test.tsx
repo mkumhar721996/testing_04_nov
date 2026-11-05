@@ -8,7 +8,7 @@ describe('MainNav', () => {
   it.each(placeholders)('%s is disabled, labelled Coming soon and opens nothing', (label) => {
     render(<MainNav />);
     const item = screen.getByRole('button', { name: new RegExp(label) });
-    expect(item).toHaveAttribute('aria-disabled', 'true');
+    expect(item).toBeDisabled();
     expect(within(item).getByText('Coming soon')).toBeInTheDocument();
 
     fireEvent.click(item);

@@ -16,8 +16,7 @@ export function MainNav() {
           key={item.id}
           type="button"
           className="btn btn-ghost"
-          aria-disabled="true"
-          onClick={(e) => e.preventDefault()}
+          disabled
         >
           {item.label} <span className="badge soon">Coming soon</span>
         </button>
