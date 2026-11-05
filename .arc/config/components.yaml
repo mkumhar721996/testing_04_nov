@@ -3,18 +3,58 @@ components:
   comp_web_app:
     name: Web App
     kind: web_ui
+    directory: apps/web
+    stack:
+      choices:
+        styling: tailwind
+        language: typescript
+        framework: react + vite
+        package_manager: pnpm
+        testing_tool_e2e: playwright
+        testing_tool_unit: vitest
+      notes: database not applicable — calls Core API only
   comp_core_api:
     name: Core API
     kind: api_service
+    directory: services/api
+    stack:
+      choices:
+        database: postgresql
+        language: typescript
+        framework: nestjs
+        package_manager: pnpm
+        testing_tool_e2e: playwright
+        testing_tool_unit: vitest
+      notes: styling not applicable — API only; e2e via Playwright API testing
   comp_relational_database:
     name: Relational Database
     kind: infrastructure
+    stack:
+      choices:
+        managed_service: PostgreSQL
+      notes: named by the architecture; single tenant, cross-region replica
   comp_background_worker:
     name: Background Worker
     kind: worker
+    directory: services/worker
+    stack:
+      choices:
+        language: typescript
+        package_manager: pnpm
+        testing_tool_unit: vitest
+      notes: uses the shared PostgreSQL database but does not own it; no UI or externally
+        called surface, so no e2e
   comp_authentication_service:
     name: Authentication Service
     kind: managed_service
+    stack:
+      choices:
+        managed_service: Microsoft Entra ID
+      notes: named by the architecture; Core API validates its tokens
   comp_email_service:
     name: Email Service
     kind: managed_service
+    stack:
+      choices:
+        managed_service: Microsoft 365 (Microsoft Graph Mail API), SendGrid as fallback
+      notes: named by the architecture
