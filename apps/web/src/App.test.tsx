@@ -170,4 +170,15 @@ describe('App', () => {
     render(<App />);
     expect(await screen.findByRole('heading', { name: 'Login button unresponsive' })).toBeInTheDocument();
   });
+
+  it('opens component settings at /settings/components', async () => {
+    window.history.pushState({}, '', '/settings/components');
+    sessionStorage.setItem('session', JSON.stringify(sessions.buyer));
+    vi.stubGlobal('fetch', vi.fn((url: string) =>
+      Promise.resolve(new Response(JSON.stringify(String(url).endsWith('/me/access') ? { isLead: true } : []))),
+    ));
+    render(<App />);
+    await screen.findByText('No components yet');
+    expect(screen.getByRole('heading', { name: 'Components' })).toBeInTheDocument();
+  });
 });

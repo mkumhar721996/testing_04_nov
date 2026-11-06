@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Role, Session } from './api/auth';
 import { AppShell } from './components/AppShell';
+import { ComponentSettings } from './components-settings/ComponentSettings';
 import { SessionProvider, useSession } from './features/auth/SessionProvider';
 import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
@@ -9,6 +10,9 @@ import { DefectPage } from './features/defect/DefectPage';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
 const defectIdFromPath = (path: string) => /^\/items\/([^/]+)\/?$/.exec(path)?.[1] ?? null;
+
+// Component management is reached at /settings/components (no nav entry: nav is role-driven).
+const isComponentSettingsPath = (path: string) => /^\/settings\/components\/?$/.test(path);
 
 const ALLOWED_ACTIONS: Record<Role, string[]> = {
   buyer: ['Search for parts', 'Keep one cart and place an order', "View the Distributor's orders"],
@@ -74,7 +78,8 @@ function Shell({ session }: { session: Session }) {
   if (window.location.pathname === '/dashboard') return <Dashboard />;
 
   let content;
-  if (id) content = <DefectPage id={decodeURIComponent(id)} />;
+  if (isComponentSettingsPath(window.location.pathname)) content = <ComponentSettings />;
+  else if (id) content = <DefectPage id={decodeURIComponent(id)} />;
   else if (section === 'cart') content = <Placeholder title="Cart" />;
   else if (section === 'orders') content = <Placeholder title="Orders" />;
   else content = <Search session={session} />;
