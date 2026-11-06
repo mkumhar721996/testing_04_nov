@@ -37,6 +37,7 @@
   padding: var(--space-3); border-top: var(--border-width) solid var(--color-border);
   color: var(--color-fg-muted); font-size: var(--font-size-sm);
 }
+.perm-list { padding-left: var(--space-4); }
 @media (min-width: 768px) {
   .shell-header .shell-menu-btn { display: none; }
   .shell-body { flex-direction: row; }

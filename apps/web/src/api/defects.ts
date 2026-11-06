@@ -1,3 +1,5 @@
+import { apiFetch } from "./http";
+
 export type Status =
   | 'New'
   | 'Triaged'
@@ -43,7 +45,7 @@ const base = (import.meta.env?.VITE_API_BASE_URL as string | undefined) ?? '/';
 const url = (path: string) => `${base.replace(/\/$/, '')}${path}`;
 
 export async function getDefect(id: string): Promise<DefectDetail> {
-  const res = await fetch(url(`/defects/${encodeURIComponent(id)}`));
+  const res = await apiFetch(url(`/defects/${encodeURIComponent(id)}`));
   if (!res.ok) throw new Error(res.status === 404 ? 'not-found' : 'failed');
   return res.json();
 }
@@ -53,7 +55,7 @@ export async function postMove(
   body: { to: Status; expectedVersion: number; reason?: string },
 ): Promise<MoveResult> {
   try {
-    const res = await fetch(url(`/defects/${encodeURIComponent(id)}/status-moves`), {
+    const res = await apiFetch(url(`/defects/${encodeURIComponent(id)}/status-moves`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
