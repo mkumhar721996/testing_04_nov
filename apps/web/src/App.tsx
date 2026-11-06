@@ -4,6 +4,7 @@ import { AppShell } from './components/AppShell';
 import { SessionProvider, useSession } from './features/auth/SessionProvider';
 import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
+import { CartPage } from './features/cart/CartPage';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
 
@@ -75,7 +76,7 @@ function Shell({ session }: { session: Session }) {
 
   let content;
   if (id) content = <DefectPage id={decodeURIComponent(id)} />;
-  else if (section === 'cart') content = <Placeholder title="Cart" />;
+  else if (section === 'cart') content = <CartPage onSearch={() => setSection('search')} />;
   else if (section === 'orders') content = <Placeholder title="Orders" />;
   else content = <Search session={session} />;
 

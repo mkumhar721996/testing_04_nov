@@ -108,8 +108,8 @@ describe('App', () => {
 
   it('switches to a placeholder for sections other stories build', async () => {
     await signInAs('buyer');
-    fireEvent.click(screen.getByRole('link', { name: 'Cart' }));
-    expect(screen.getByText('Cart is not available yet')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: 'Orders' }));
+    expect(screen.getByText('Orders is not available yet')).toBeInTheDocument();
   });
 
   it('signs out to the sign-in screen without the expired message', () => {
