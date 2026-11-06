@@ -13,6 +13,16 @@ test('GET /me without a verified user is 401', async ({ request }) => {
   expect(res.status()).toBe(401);
 });
 
+test('GET /me/overview without a verified user is 401', async ({ request }) => {
+  const res = await request.get('/me/overview');
+  expect(res.status()).toBe(401);
+});
+
+test('GET /me/transactions without a verified user is 401', async ({ request }) => {
+  const res = await request.get('/me/transactions');
+  expect(res.status()).toBe(401);
+});
+
 test.fixme('seeded user gets only last4, expiry and balance in under 500 ms', async ({ request }) => {
   const started = Date.now();
   const res = await request.get('/me/card-summary');

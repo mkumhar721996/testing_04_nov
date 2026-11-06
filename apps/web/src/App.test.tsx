@@ -38,7 +38,18 @@ describe('App', () => {
             JSON.stringify(
               String(url).endsWith('/me/card-summary')
                 ? { last4: '9286', expiry: '08/32', balance: { amount: '1.00', currency: 'USD' } }
-                : { name: 'Ada' },
+                : String(url).endsWith('/me/transactions')
+                  ? []
+                  : String(url).endsWith('/me/overview')
+                    ? {
+                        year: 2026,
+                        currency: 'USD',
+                        total: '0.00',
+                        trend: null,
+                        months: [],
+                        hasMovement: false,
+                      }
+                    : { name: 'Ada' },
             ),
           ),
         ),
