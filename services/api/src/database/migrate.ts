@@ -27,7 +27,8 @@ export async function migrate(pool: Pool, dir = MIGRATIONS_DIR): Promise<string[
       }
       await client.query('COMMIT');
     } catch (err) {
-      await client.query('ROLLBACK');
+      // A failed rollback must not mask the migration error.
+      await client.query('ROLLBACK').catch(() => undefined);
       throw err;
     } finally {
       client.release();
@@ -36,13 +37,35 @@ export async function migrate(pool: Pool, dir = MIGRATIONS_DIR): Promise<string[
   return applied;
 }
 
+/**
+ * Latest applied migration version: the highest file name in schema_migrations without `.sql`
+ * (the numeric prefix is not unique), or null when none is applied or the table is missing.
+ */
+export async function latestVersion(pool: Pool): Promise<string | null> {
+  try {
+    const { rows } = await pool.query('SELECT name FROM schema_migrations ORDER BY name DESC LIMIT 1');
+    return rows.length ? String(rows[0].name).replace(/\.sql$/, '') : null;
+  } catch (err) {
+    if ((err as { code?: string }).code === '42P01') return null; // undefined_table
+    throw err;
+  }
+}
+
 if (require.main === module) {
   const pool = new Pool({
     connectionString:
       process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/core_api',
   });
-  migrate(pool)
-    .then((applied) => console.log(applied.length ? `Applied: ${applied.join(', ')}` : 'Up to date'))
+  const command = process.argv[2] ?? 'up';
+  const run =
+    command === 'version'
+      ? latestVersion(pool).then((v) => console.log(v ?? 'none'))
+      : command === 'up'
+        ? migrate(pool).then((applied) =>
+            console.log(applied.length ? `Applied: ${applied.join(', ')}` : 'Up to date'),
+          )
+        : Promise.reject(new Error(`Unknown command "${command}". Use "up" or "version".`));
+  run
     .catch((err) => {
       console.error(err);
       process.exitCode = 1;
