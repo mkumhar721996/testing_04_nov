@@ -42,6 +42,22 @@ describe('SessionProvider', () => {
     expect(screen.getByTestId('who')).toHaveTextContent('none');
   });
 
+  it('ignores a stored session with an unknown role', () => {
+    sessionStorage.setItem('session', JSON.stringify({ ...base, role: 'foo' }));
+    mount();
+    expect(screen.getByTestId('who')).toHaveTextContent('none');
+  });
+
+  it('does not expire early when expiresAt is far in the future', () => {
+    vi.useFakeTimers();
+    sessionStorage.setItem('session', JSON.stringify({ ...base, expiresAt: Date.now() + 2 ** 31 * 2 }));
+    mount();
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.getByTestId('who')).toHaveTextContent('Sam');
+  });
+
   it('ignores a stored session already past expiresAt', () => {
     sessionStorage.setItem('session', JSON.stringify({ ...base, expiresAt: Date.now() - 1 }));
     mount();

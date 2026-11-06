@@ -2,4 +2,3 @@
 .auth-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-4) var(--space-3); background: var(--color-bg-subtle); box-sizing: border-box; }
 .auth-card { width: 100%; max-width: var(--modal-width); box-sizing: border-box; }
 .auth-notice { min-height: var(--control-height-md); }
-.sr-only { position: absolute; width: var(--border-width); height: var(--border-width); overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

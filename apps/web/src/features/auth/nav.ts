@@ -11,6 +11,13 @@ const CART: NavItem = { key: 'cart', label: 'Cart' };
 const ORDERS: NavItem = { key: 'orders', label: 'Orders' };
 
 // The only place a role's menu is decided.
+const NAV_BY_ROLE: Record<Role, NavItem[]> = {
+  buyer: [SEARCH, CART, ORDERS],
+  admin: [SEARCH, CART, ORDERS],
+  csr: [SEARCH, ORDERS],
+};
+
+// An unknown role gets no navigation at all.
 export function navForRole(role: Role): NavItem[] {
-  return role === 'csr' ? [SEARCH, ORDERS] : [SEARCH, CART, ORDERS];
+  return NAV_BY_ROLE[role] ?? [];
 }

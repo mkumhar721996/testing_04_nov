@@ -23,6 +23,10 @@ describe('login', () => {
     stub(401);
     expect(await login('a', 'b')).toEqual({ kind: 'invalid' });
   });
+  it('treats a response with an unknown role as an error', async () => {
+    stub(200, { ...session, role: 'foo' });
+    expect(await login('a', 'b')).toEqual({ kind: 'error' });
+  });
   it('maps other statuses and network failures to error', async () => {
     stub(500);
     expect(await login('a', 'b')).toEqual({ kind: 'error' });

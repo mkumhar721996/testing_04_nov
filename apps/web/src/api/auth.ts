@@ -8,6 +8,9 @@ export interface Session {
 }
 export type LoginResult = { kind: 'ok'; session: Session } | { kind: 'invalid' } | { kind: 'error' };
 
+export const isRole = (value: unknown): value is Role =>
+  value === 'buyer' || value === 'admin' || value === 'csr';
+
 const base = (import.meta.env?.VITE_API_BASE_URL as string | undefined) ?? '/';
 
 export async function login(email: string, password: string): Promise<LoginResult> {
@@ -20,6 +23,7 @@ export async function login(email: string, password: string): Promise<LoginResul
     if (res.status === 401) return { kind: 'invalid' };
     if (!res.ok) return { kind: 'error' };
     const body = await res.json();
+    if (!isRole(body?.role) || typeof body.token !== 'string') return { kind: 'error' };
     return { kind: 'ok', session: { ...body, expiresAt: body.expiresAt ?? null } };
   } catch {
     return { kind: 'error' };

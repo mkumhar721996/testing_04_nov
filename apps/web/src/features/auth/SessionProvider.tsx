@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import type { Session } from '../../api/auth';
+import { isRole, type Session } from '../../api/auth';
 import { setAuthHooks } from '../../api/http';
 
 type Notice = 'expired' | 'signed-out' | null;
@@ -13,6 +13,7 @@ interface SessionContextValue {
 }
 
 const STORAGE_KEY = 'session';
+const MAX_DELAY = 2 ** 31 - 1;
 const SessionContext = createContext<SessionContextValue | null>(null);
 
 function restore(): Session | null {
@@ -20,7 +21,7 @@ function restore(): Session | null {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     const s = JSON.parse(raw) as Session;
-    if (typeof s?.token !== 'string' || typeof s.role !== 'string') return null;
+    if (typeof s?.token !== 'string' || !isRole(s.role)) return null;
     if (s.expiresAt != null && s.expiresAt <= Date.now()) return null;
     return s;
   } catch {
@@ -59,7 +60,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (session?.expiresAt == null) return;
-    const timer = setTimeout(expire, Math.max(0, session.expiresAt - Date.now()));
+    // setTimeout overflows (and fires at once) beyond ~24.8 days; re-arm in capped steps.
+    const arm = (): ReturnType<typeof setTimeout> => {
+      const left = session.expiresAt! - Date.now();
+      return setTimeout(() => (left > MAX_DELAY ? (timer = arm()) : expire()), Math.min(Math.max(0, left), MAX_DELAY));
+    };
+    let timer = arm();
     return () => clearTimeout(timer);
   }, [session, expire]);
 
