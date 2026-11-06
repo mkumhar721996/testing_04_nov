@@ -36,4 +36,33 @@ svg.icon { width: var(--icon-size); height: var(--icon-size); fill: none; stroke
 .card-panel { background: var(--color-surface); color: var(--color-fg); border-radius: var(--radius-lg); padding: var(--space-4); min-height: var(--dashboard-card-slot-min-height); box-sizing: border-box; display: flex; flex-direction: column; gap: var(--space-2); justify-content: center; }
 .card-panel h2 { margin: 0; font-size: var(--font-size-lg); }
 .card-panel p { color: var(--color-fg-muted); }
+/* Overview and Recent transactions. The chart min-width, section height and amount column have no
+   design-system token yet (token request to be raised); they stay as named local properties. */
+.dash-grid {
+  --dashboard-chart-min-width: 420px;
+  --dashboard-section-height: 220px;
+  --dashboard-amount-width: 88px;
+  display: grid; gap: var(--space-3); padding-top: var(--space-4); align-items: start;
+}
+@media (min-width: 900px) { .dash-grid { grid-template-columns: 3fr 2fr; } }
+.col { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+.between { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.stat { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); }
+.chart { width: 100%; height: auto; display: block; }
+.chart .bar { fill: var(--color-success-bg); stroke: var(--color-success); stroke-width: var(--border-width-strong); }
+.chart .axis { stroke: var(--color-border); stroke-width: var(--border-width); }
+.chart .lbl { fill: var(--color-fg-muted); font-size: var(--font-size-sm); font-family: var(--font-family-base); }
+.chart-scroll { overflow-x: auto; }
+.chart-scroll .chart { min-width: var(--dashboard-chart-min-width); }
+.tx-list { list-style: none; margin: 0; padding: 0; }
+.tx { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); padding: var(--space-2); background: var(--color-bg-subtle); border-radius: var(--radius-md); list-style: none; margin: 0; }
+.tx-main { flex: 1 1 180px; min-width: 0; overflow-wrap: anywhere; }
+.tx-amount { min-width: var(--dashboard-amount-width); text-align: right; }
+.link-soon { min-height: var(--touch-target-min); display: inline-flex; align-items: center; color: var(--color-primary); }
+.section-panel { display: flex; flex-direction: column; gap: var(--space-2); justify-content: center; align-items: flex-start; min-height: var(--dashboard-section-height); padding: var(--space-3); background: var(--color-bg-subtle); border-radius: var(--radius-md); box-sizing: border-box; }
+.section-panel h4 { margin: 0; font-size: var(--font-size-lg); }
+.section-panel p { margin: 0; color: var(--color-fg-muted); }
+.sk-chart { height: var(--dashboard-section-height); width: 100%; }
+.card h3 { margin: 0; font-size: var(--font-size-lg); }
+.empty-state h4 { margin: 0; font-size: var(--font-size-md); }
 [aria-disabled="true"], button:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }

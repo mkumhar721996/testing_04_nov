@@ -1,4 +1,4 @@
-import type { CardSummary, Profile } from './types';
+import type { CardSummary, Overview, Profile, Transaction } from './types';
 
 const baseUrl = import.meta.env.VITE_API_URL ?? '/api';
 
@@ -10,3 +10,5 @@ async function getJson<T>(path: string): Promise<T> {
 
 export const fetchProfile = () => getJson<Profile>('/me');
 export const fetchCardSummary = () => getJson<CardSummary>('/me/card-summary');
+export const fetchOverview = () => getJson<Overview>('/me/overview');
+export const fetchTransactions = () => getJson<Transaction[]>('/me/transactions');
