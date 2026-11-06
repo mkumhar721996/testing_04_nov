@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { DefectDetail, getDefect, postMove, Status, StatusMove } from '../../api/defects';
+import { DefectDetail, getDefect, postComment, postMove, Status, StatusMove } from '../../api/defects';
 import { CommentsCard } from './CommentsCard';
 import { ReasonForm, ReasonKind } from './ReasonForm';
 import { StatusMovesCard } from './StatusMovesCard';
@@ -30,6 +30,9 @@ export function DefectPage({ id }: { id: string }) {
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [reasonMove, setReasonMove] = useState<StatusMove | null>(null);
   const [pending, setPending] = useState(false);
+  const [commentPending, setCommentPending] = useState(false);
+  const [commentError, setCommentError] = useState<string | null>(null);
+  const [newCommentId, setNewCommentId] = useState<string | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -77,6 +80,29 @@ export function DefectPage({ id }: { id: string }) {
 
   const { defect } = load;
 
+  const showToast = (message: string) => {
+    setToast(message);
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 4000);
+  };
+
+  const postNewComment = async (text: string) => {
+    setCommentPending(true);
+    setCommentError(null);
+    const result = await postComment(defect.id, text);
+    setCommentPending(false);
+    if (result.kind === 'ok') {
+      setLoad({ state: 'ready', defect: result.defect });
+      setNewCommentId(result.defect.comments.at(-1)?.id ?? null);
+      showToast('Comment posted');
+      return true;
+    }
+    setCommentError(
+      result.kind === 'invalid' ? result.message : 'The comment could not be saved. Try again.',
+    );
+    return false;
+  };
+
   const run = async (move: StatusMove, reason?: string) => {
     setPending(true);
     setBanner(null);
@@ -89,9 +115,7 @@ export function DefectPage({ id }: { id: string }) {
     if (result.kind === 'ok') {
       setLoad({ state: 'ready', defect: result.defect });
       setReasonMove(null);
-      setToast(successMessage(move, result.defect.status));
-      clearTimeout(toastTimer.current);
-      toastTimer.current = setTimeout(() => setToast(null), 4000);
+      showToast(successMessage(move, result.defect.status));
     } else if (result.kind === 'conflict') {
       setLoad({ state: 'ready', defect: result.defect });
       setReasonMove(null);
@@ -141,7 +165,15 @@ export function DefectPage({ id }: { id: string }) {
         </p>
       )}
 
-      <CommentsCard comments={defect.comments} />
+      <CommentsCard
+        comments={defect.comments}
+        viewerName={defect.viewerName}
+        newCommentId={newCommentId}
+        pending={commentPending}
+        formError={commentError}
+        showForm={!reasonMove}
+        onPost={postNewComment}
+      />
 
       {toast && (
         <div className="toast is-open" role="status">

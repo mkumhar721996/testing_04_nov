@@ -29,6 +29,8 @@ export interface NewComment {
 export interface DefectRepository {
   findById(id: string): Promise<DefectRecord | null>;
   listComments(defectId: string): Promise<CommentRecord[]>;
+  /** Plain insert of a standalone comment; null when the defect does not exist. */
+  addComment(defectId: string, comment: NewComment): Promise<CommentRecord | null>;
   /**
    * Atomic: updates status only if row_version still equals `expectedVersion`, bumps it, and
    * inserts the comment (when given) in the SAME transaction. Returns false when the version
