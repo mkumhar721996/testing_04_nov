@@ -1,14 +1,21 @@
-import { useState, type ReactNode } from 'react';
+import { useState, type MouseEvent, type ReactNode } from 'react';
 
-const NAV = [
-  { key: 'dashboard', label: 'Dashboard' },
-  { key: 'items', label: 'Items' },
-  { key: 'activity', label: 'Activity' },
-  { key: 'settings', label: 'Settings' },
-];
+interface AppShellProps {
+  children: ReactNode;
+  navItems: { key: string; label: string }[];
+  currentKey: string;
+  onNavigate(key: string): void;
+  user: { name: string; title: string };
+  onSignOut(): void;
+}
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, navItems, currentKey, onNavigate, user, onSignOut }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
+  const go = (key: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    setNavOpen(false);
+    onNavigate(key);
+  };
   return (
     <div className="shell">
       <header className="shell-header">
@@ -22,23 +29,26 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           &#9776;
         </button>
-        <a className="shell-brand" href="/">
-          Workspace
-        </a>
-        <a className="btn btn-ghost btn-sm" href="/">
-          Account
-        </a>
+        <span className="shell-brand" aria-hidden="true" />
+        <button
+          className="btn btn-secondary btn-sm"
+          type="button"
+          title={`${user.name}, ${user.title}`}
+          onClick={onSignOut}
+        >
+          Sign out
+        </button>
       </header>
       <div className="shell-body">
-        <nav
-          className={navOpen ? 'shell-nav is-open' : 'shell-nav'}
-          id="shell-nav"
-          aria-label="Main"
-        >
+        <nav className={navOpen ? 'shell-nav is-open' : 'shell-nav'} id="shell-nav" aria-label="Main">
           <ul>
-            {NAV.map((item) => (
+            {navItems.map((item) => (
               <li key={item.key}>
-                <a href="/" aria-current={item.key === 'items' ? 'page' : undefined}>
+                <a
+                  href={`/${item.key}`}
+                  aria-current={item.key === currentKey ? 'page' : undefined}
+                  onClick={go(item.key)}
+                >
                   {item.label}
                 </a>
               </li>
@@ -47,9 +57,6 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
         <main className="shell-content">{children}</main>
       </div>
-      <footer className="shell-footer">
-        <span>Workspace</span>
-      </footer>
     </div>
   );
 }
