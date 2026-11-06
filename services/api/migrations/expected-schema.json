@@ -1,0 +1,53 @@
+{
+  "defect_comments": {
+    "columns": [
+      { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+      { "name": "defect_id", "type": "uuid", "nullable": false, "default": null },
+      { "name": "author_id", "type": "text", "nullable": false, "default": null },
+      { "name": "author_name", "type": "text", "nullable": false, "default": null },
+      { "name": "body", "type": "text", "nullable": false, "default": null },
+      { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+    ],
+    "constraints": [
+      { "name": "defect_comments_defect_id_fkey", "definition": "FOREIGN KEY (defect_id) REFERENCES defects(id)" },
+      { "name": "defect_comments_pkey", "definition": "PRIMARY KEY (id)" }
+    ],
+    "indexes": [
+      { "name": "defect_comments_defect_idx", "definition": "CREATE INDEX defect_comments_defect_idx ON public.defect_comments USING btree (defect_id, created_at)" },
+      { "name": "defect_comments_pkey", "definition": "CREATE UNIQUE INDEX defect_comments_pkey ON public.defect_comments USING btree (id)" }
+    ]
+  },
+  "defects": {
+    "columns": [
+      { "name": "id", "type": "uuid", "nullable": false, "default": "gen_random_uuid()" },
+      { "name": "key", "type": "text", "nullable": false, "default": null },
+      { "name": "title", "type": "text", "nullable": false, "default": null },
+      { "name": "status", "type": "text", "nullable": false, "default": "'New'::text" },
+      { "name": "owner_id", "type": "text", "nullable": true, "default": null },
+      { "name": "owner_name", "type": "text", "nullable": true, "default": null },
+      { "name": "row_version", "type": "integer", "nullable": false, "default": "1" },
+      { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" },
+      { "name": "updated_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+    ],
+    "constraints": [
+      { "name": "defects_key_key", "definition": "UNIQUE (key)" },
+      { "name": "defects_pkey", "definition": "PRIMARY KEY (id)" },
+      { "name": "defects_status_check", "definition": "CHECK ((status = ANY (ARRAY['New'::text, 'Triaged'::text, 'In progress'::text, 'Resolved'::text, 'Verified'::text, 'Closed'::text, 'Rejected'::text])))" }
+    ],
+    "indexes": [
+      { "name": "defects_key_key", "definition": "CREATE UNIQUE INDEX defects_key_key ON public.defects USING btree (key)" },
+      { "name": "defects_pkey", "definition": "CREATE UNIQUE INDEX defects_pkey ON public.defects USING btree (id)" }
+    ]
+  },
+  "tooling_proof": {
+    "columns": [
+      { "name": "id", "type": "integer", "nullable": false, "default": null },
+      { "name": "note", "type": "text", "nullable": false, "default": null },
+      { "name": "created_at", "type": "timestamp with time zone", "nullable": false, "default": "now()" }
+    ],
+    "constraints": [{ "name": "tooling_proof_pkey", "definition": "PRIMARY KEY (id)" }],
+    "indexes": [
+      { "name": "tooling_proof_pkey", "definition": "CREATE UNIQUE INDEX tooling_proof_pkey ON public.tooling_proof USING btree (id)" }
+    ]
+  }
+}

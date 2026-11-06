@@ -13,6 +13,8 @@
     "test": "vitest run",
     "devloop": "pnpm typecheck && pnpm test",
     "migrate": "tsx src/database/migrate.ts",
+    "migrate:version": "tsx src/database/migrate.ts version",
+    "db:check": "tsx src/database/check.ts",
     "e2e": "playwright test"
   },
   "dependencies": {
