@@ -83,11 +83,11 @@ describe('components API guards', () => {
   });
 });
 
-describe('GET /me', () => {
+describe('GET /me/access', () => {
   it('reports whether the caller is a Lead', async () => {
     const http = request(app.getHttpServer());
-    expect((await http.get('/me').set(lead)).body).toEqual({ isLead: true });
-    expect((await http.get('/me').set(reporter)).body).toEqual({ isLead: false });
-    await http.get('/me').expect(401);
+    expect((await http.get('/me/access').set(lead)).body).toEqual({ isLead: true });
+    expect((await http.get('/me/access').set(reporter)).body).toEqual({ isLead: false });
+    await http.get('/me/access').expect(401);
   });
 });

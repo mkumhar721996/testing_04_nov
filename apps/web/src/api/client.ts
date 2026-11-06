@@ -47,5 +47,5 @@ export function retireComponent(id: string): Promise<ComponentItem> {
 }
 
 export function getMe(): Promise<{ isLead: boolean }> {
-  return request('/me');
+  return request('/me/access');
 }

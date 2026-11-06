@@ -11,8 +11,8 @@ function fakePool() {
   const client = {
     query: async (sql: string, params?: string[]) => {
       statements.push(sql);
-      if (sql.startsWith('SELECT name')) {
-        return { rows: [...applied].map((name) => ({ name })) };
+      if (sql.startsWith('SELECT 1 FROM schema_migrations') && params) {
+        return { rows: [], rowCount: applied.has(params[0]) ? 1 : 0 };
       }
       if (sql.startsWith('INSERT INTO schema_migrations') && params) {
         applied.add(params[0]);
@@ -21,7 +21,7 @@ function fakePool() {
     },
     release: () => undefined,
   };
-  const pool = { connect: async () => client } as unknown as Pool;
+  const pool = { connect: async () => client, query: client.query } as unknown as Pool;
   return { pool, statements };
 }
 

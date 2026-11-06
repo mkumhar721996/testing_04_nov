@@ -5,16 +5,13 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // The design system lives outside the app root, at the repository root.
   server: {
-    // The design system lives at the repository root, outside apps/web.
     fs: { allow: ['../..'] },
-    // The Core API has no global prefix, so /api is stripped.
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
-    },
+    proxy: { '/api': { target: 'http://localhost:3000', rewrite: (p) => p.replace(/^\/api/, '') } },
+  },
+  preview: {
+    proxy: { '/api': { target: 'http://localhost:3000', rewrite: (p) => p.replace(/^\/api/, '') } },
   },
   test: {
     environment: 'jsdom',

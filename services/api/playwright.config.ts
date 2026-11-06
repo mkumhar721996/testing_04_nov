@@ -11,8 +11,9 @@ export default defineConfig({
   webServer: {
     command: 'pnpm migrate && pnpm build && pnpm start',
     url: `http://localhost:${port}/health`,
-    // TEST_AUTH=1 binds the test token verifier; it is honoured only when NODE_ENV=test.
-    env: { PORT: String(port), NODE_ENV: 'test', TEST_AUTH: '1' },
+    // TEST_AUTH=1 binds the test token verifier (honoured only when NODE_ENV=test);
+    // AUTH_DEV_ACTOR injects the fixed dev actor used by the defects endpoints.
+    env: { PORT: String(port), NODE_ENV: 'test', TEST_AUTH: '1', AUTH_DEV_ACTOR: 'true' },
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
