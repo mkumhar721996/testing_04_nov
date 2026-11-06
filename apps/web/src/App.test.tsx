@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 
 const sessions = {
@@ -28,6 +29,33 @@ const navLabels = () =>
     .map((l) => l.textContent);
 
 describe('App', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify(
+              String(url).endsWith('/me/card-summary')
+                ? { last4: '9286', expiry: '08/32', balance: { amount: '1.00', currency: 'USD' } }
+                : { name: 'Ada' },
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  it('renders the Dashboard landing screen (AC1)', async () => {
+    window.history.pushState({}, '', '/dashboard');
+    sessionStorage.setItem('session', JSON.stringify(sessions.buyer));
+    render(<App />);
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /welcome back/i }),
+    ).toBeInTheDocument();
+  });
+
+
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.useRealTimers();

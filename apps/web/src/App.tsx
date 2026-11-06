@@ -4,6 +4,7 @@ import { AppShell } from './components/AppShell';
 import { SessionProvider, useSession } from './features/auth/SessionProvider';
 import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
+import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
@@ -67,6 +68,10 @@ function Shell({ session }: { session: Session }) {
   const { signOut } = useSession();
   const [section, setSection] = useState('search');
   const id = defectIdFromPath(window.location.pathname);
+
+  // TODO(rebase): uncertain merge — please review. Main rendered the Dashboard at '/';
+  // with sign-in gating it is now shown to signed-in users at '/dashboard'.
+  if (window.location.pathname === '/dashboard') return <Dashboard />;
 
   let content;
   if (id) content = <DefectPage id={decodeURIComponent(id)} />;
