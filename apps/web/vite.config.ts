@@ -5,8 +5,14 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // The design-system tokens live outside the app root.
-  server: { fs: { allow: ['../..'] } },
+  // The design system lives outside the app root, at the repository root.
+  server: {
+    fs: { allow: ['../..'] },
+    proxy: { '/api': { target: 'http://localhost:3000', rewrite: (p) => p.replace(/^\/api/, '') } },
+  },
+  preview: {
+    proxy: { '/api': { target: 'http://localhost:3000', rewrite: (p) => p.replace(/^\/api/, '') } },
+  },
   test: {
     environment: 'jsdom',
     globals: true,
