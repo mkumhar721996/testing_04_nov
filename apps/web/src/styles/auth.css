@@ -1,5 +1,5 @@
 /* Classes the design system does not define, built on its tokens. */
-.auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-3); background: var(--color-bg-subtle); }
-.auth-card { width: 100%; max-width: var(--modal-width); }
-.auth-brand { font-weight: var(--font-weight-bold); font-size: var(--font-size-lg); }
-.sr-only { position: absolute; width: var(--border-width); height: var(--border-width); padding: 0; margin: calc(var(--border-width) * -1); overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.auth-wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-3); padding: var(--space-4) var(--space-3); background: var(--color-bg-subtle); box-sizing: border-box; }
+.auth-card { width: 100%; max-width: var(--modal-width); box-sizing: border-box; }
+.auth-notice { min-height: var(--control-height-md); }
+.sr-only { position: absolute; width: var(--border-width); height: var(--border-width); overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

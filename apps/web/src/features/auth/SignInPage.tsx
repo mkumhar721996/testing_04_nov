@@ -30,63 +30,74 @@ export function SignInPage() {
   return (
     <div className="auth-wrap">
       <div className="card auth-card stack">
-        <h1>Sign in</h1>
-        <div aria-live="polite">
-          {notice === 'expired' && (
-            <div className="alert alert-warning" role="alert">
-              Your session expired. Sign in again to continue.
+        <h1 className="text-lg">Sign in</h1>
+        <div className="auth-notice" aria-live="polite">
+          {busy && (
+            <div className="cluster">
+              <span className="spinner" aria-hidden="true" />
+              <span>Signing you in…</span>
             </div>
           )}
-          {notice === 'signed-out' && <div className="alert alert-success">You signed out.</div>}
-        </div>
-        <form className="stack" onSubmit={onSubmit} noValidate>
-          {failure && (
-            <div className="alert" role="alert">
+          {!busy && failure && (
+            <div className="alert alert-danger" role="alert">
               {failure === 'invalid'
                 ? 'The email or password is incorrect. Check both and try again.'
                 : "We couldn't sign you in. Try again in a moment."}
             </div>
           )}
+          {!busy && !failure && notice === 'expired' && (
+            <div className="alert alert-warning" role="alert">
+              Your session expired. Sign in again to continue.
+            </div>
+          )}
+          {!busy && !failure && notice === 'signed-out' && (
+            <div className="alert alert-success" role="status">
+              You signed out.
+            </div>
+          )}
+        </div>
+        <form className="stack" onSubmit={onSubmit} noValidate>
           <div className="field">
             <label htmlFor="signin-email">Email</label>
             <input
               id="signin-email"
+              className={emailError ? 'input is-invalid' : 'input'}
               type="email"
               placeholder="Email"
               autoComplete="username"
-              className={emailError ? 'is-invalid' : undefined}
+              aria-describedby="signin-email-err"
               aria-invalid={emailError ? true : undefined}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {emailError ? (
-              <span className="field-error">{emailError}</span>
-            ) : (
-              <span className="field-hint">Use your POC account to continue.</span>
+            {emailError && (
+              <span className="field-error" id="signin-email-err" role="alert">
+                {emailError}
+              </span>
             )}
           </div>
           <div className="field">
             <label htmlFor="signin-password">Password</label>
             <input
               id="signin-password"
+              className={passwordError ? 'input is-invalid' : 'input'}
               type="password"
               placeholder="Password"
               autoComplete="current-password"
-              className={passwordError ? 'is-invalid' : undefined}
+              aria-describedby="signin-password-err"
               aria-invalid={passwordError ? true : undefined}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {passwordError && <span className="field-error">{passwordError}</span>}
+            {passwordError && (
+              <span className="field-error" id="signin-password-err" role="alert">
+                {passwordError}
+              </span>
+            )}
           </div>
-          <button className="btn btn-primary" type="submit" disabled={busy}>
+          <button className="btn btn-primary btn-block" type="submit" disabled={busy}>
             Sign in
           </button>
-          {busy && (
-            <p className="cluster text-muted">
-              <span className="spinner" aria-hidden="true" /> Signing you in…
-            </p>
-          )}
         </form>
       </div>
     </div>
