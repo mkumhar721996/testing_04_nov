@@ -60,6 +60,24 @@ describe('App', () => {
     expect(screen.queryByRole('link', { name: 'Cart' })).not.toBeInTheDocument();
   });
 
+  it('lists what each role can do on the landing page', async () => {
+    await signInAs('admin');
+    expect(screen.getByText('What you can do as an Admin')).toBeInTheDocument();
+    expect(screen.getByText('Abandon a failed child order')).toBeInTheDocument();
+  });
+
+  it('does not offer a CSR cart or order placing', async () => {
+    await signInAs('csr');
+    expect(screen.getByText('What you can do as a CSR')).toBeInTheDocument();
+    expect(screen.queryByText('Keep one cart and place an order')).not.toBeInTheDocument();
+  });
+
+  it('keeps the session after a reload', () => {
+    sessionStorage.setItem('session', JSON.stringify(sessions.csr));
+    render(<App />);
+    expect(navLabels()).toEqual(['Search', 'Orders']);
+  });
+
   it('switches to a placeholder for sections other stories build', async () => {
     await signInAs('buyer');
     fireEvent.click(screen.getByRole('link', { name: 'Cart' }));

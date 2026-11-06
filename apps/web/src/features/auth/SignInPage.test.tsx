@@ -39,6 +39,37 @@ describe('SignInPage', () => {
     expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
   });
 
+  it('posts the entered credentials and stores the session on success', async () => {
+    const f = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ token: 'fake-token', name: 'Sam', title: 'Buyer', role: 'buyer' }), {
+          status: 200,
+        }),
+      ),
+    );
+    vi.stubGlobal('fetch', f);
+    mount();
+    submit('buyer@poc.example', 'test-password');
+    await vi.waitFor(() => expect(sessionStorage.getItem('session')).not.toBeNull());
+    const [, init] = f.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(init.body as string)).toEqual({ email: 'buyer@poc.example', password: 'test-password' });
+  });
+
+  it('disables the button and says so while signing in', () => {
+    vi.stubGlobal('fetch', vi.fn(() => new Promise(() => {})));
+    mount();
+    submit('buyer@poc.example', 'test-password');
+    expect(screen.getByRole('button', { name: 'Sign in' })).toBeDisabled();
+    expect(screen.getByText(/Signing you in/)).toBeInTheDocument();
+  });
+
+  it('marks empty fields invalid', () => {
+    mount();
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+    expect(screen.getByLabelText('Email')).toHaveClass('is-invalid');
+    expect(screen.getByLabelText('Password')).toHaveClass('is-invalid');
+  });
+
   it('shows a retry message when the API is unreachable', async () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('down'))));
     mount();
