@@ -7,6 +7,7 @@ import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
+import { QuickOrderPage } from './features/quick-order/QuickOrderPage';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
 const defectIdFromPath = (path: string) => /^\/items\/([^/]+)\/?$/.exec(path)?.[1] ?? null;
@@ -80,6 +81,7 @@ function Shell({ session }: { session: Session }) {
   let content;
   if (isComponentSettingsPath(window.location.pathname)) content = <ComponentSettings />;
   else if (id) content = <DefectPage id={decodeURIComponent(id)} />;
+  else if (section === 'quick-order') content = <QuickOrderPage />;
   else if (section === 'cart') content = <Placeholder title="Cart" />;
   else if (section === 'orders') content = <Placeholder title="Orders" />;
   else content = <Search session={session} />;

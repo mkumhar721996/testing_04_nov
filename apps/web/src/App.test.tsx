@@ -77,9 +77,16 @@ describe('App', () => {
     expect(screen.getByText('Signed in as Sam Buyer, Buyer.')).toBeInTheDocument();
   });
 
-  it.each(['buyer', 'admin'] as const)('offers %s search, cart and orders', async (role) => {
+  it.each(['buyer', 'admin'] as const)('offers %s search, quick order, cart and orders', async (role) => {
     await signInAs(role);
-    expect(navLabels()).toEqual(['Search', 'Cart', 'Orders']);
+    expect(navLabels()).toEqual(['Search', 'Quick order', 'Cart', 'Orders']);
+  });
+
+  it('opens the quick-order page from the nav', async () => {
+    await signInAs('buyer');
+    fireEvent.click(screen.getByRole('link', { name: 'Quick order' }));
+    expect(screen.getByRole('heading', { name: 'Quick order' })).toBeInTheDocument();
+    expect(screen.getByLabelText('Part number, row 1')).toBeInTheDocument();
   });
 
   it('offers a CSR search and orders, with no cart', async () => {
