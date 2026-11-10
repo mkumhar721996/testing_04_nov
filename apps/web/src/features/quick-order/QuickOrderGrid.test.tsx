@@ -180,6 +180,17 @@ describe('QuickOrderGrid', () => {
     expect(addToCart).not.toHaveBeenCalled();
   });
 
+  it('pastes sample lines from the first blank row without adding to the cart', async () => {
+    const { addToCart } = setup();
+    fillRow(1, 'FLT-HY-2210', '4');
+    fillRow(2, 'SEAL-45x62x8', '6');
+    fireEvent.click(screen.getByRole('button', { name: 'Paste sample lines' }));
+    expect(screen.getByLabelText('Part number, row 6')).toHaveValue('GSK-FL-DN50');
+    expect(screen.getByText('4 lines pasted into rows 3 to 6.')).toBeInTheDocument();
+    expect(addToCart).not.toHaveBeenCalled();
+    await screen.findByText('Flange gasket, DN50');
+  });
+
   it('clears the grid without touching the cart', () => {
     const { addToCart } = setup();
     fillRow(1, 'FLT-HY-2210', '4');

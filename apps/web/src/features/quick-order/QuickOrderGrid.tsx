@@ -166,6 +166,9 @@ export function QuickOrderGrid(props: QuickOrderApi) {
           <button className="btn btn-secondary" type="button" onClick={q.addRow}>
             + Add row
           </button>
+          <button className="btn btn-secondary" type="button" onClick={q.pasteSample}>
+            Paste sample lines
+          </button>
           <button className="btn btn-ghost" type="button" onClick={q.clear}>
             Clear grid
           </button>

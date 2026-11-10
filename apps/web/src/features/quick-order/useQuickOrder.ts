@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { addCartLines, lookupParts } from '../../api/quickOrder';
 import { parsePastedLines } from './parsePastedLines';
+import { SAMPLE_LINES } from './sampleLines';
 import type { CartLine, GridRow, PartMatch, RowResult } from './types';
 import { validateRow } from './validateRow';
 
@@ -71,8 +72,21 @@ export function useQuickOrder({ lookup = lookupParts, addToCart = addCartLines }
 
   const paste = (key: number, text: string): boolean => {
     if (!/\r?\n/.test(text.trim())) return false;
+    fillFrom(
+      rows.findIndex((r) => r.key === key),
+      text,
+    );
+    return true;
+  };
+
+  // Starts at the first fully blank row that is not added (or after the last row).
+  const pasteSample = () => {
+    const blankAt = rows.findIndex((r) => !r.added && !isFilled(r));
+    fillFrom(blankAt < 0 ? rows.length : blankAt, SAMPLE_LINES);
+  };
+
+  function fillFrom(start: number, text: string) {
     const lines = parsePastedLines(text);
-    const start = rows.findIndex((r) => r.key === key);
     const end = start + lines.length;
     setRows((rs) => {
       const next = [...rs];
@@ -85,8 +99,7 @@ export function useQuickOrder({ lookup = lookupParts, addToCart = addCartLines }
     setNote(`${lines.length} lines pasted into rows ${start + 1} to ${end}.`);
     setOutcome(null);
     void refreshMatches(lines.map((l) => l.part));
-    return true;
-  };
+  }
 
   const addRow = () => {
     setNote('');
@@ -156,6 +169,7 @@ export function useQuickOrder({ lookup = lookupParts, addToCart = addCartLines }
     filled: rows.filter(isFilled).length,
     update,
     paste,
+    pasteSample,
     addRow,
     removeRow,
     clear,
