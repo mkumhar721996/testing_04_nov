@@ -106,10 +106,18 @@ describe('App', () => {
     expect(navLabels()).toEqual(['Search', 'Orders']);
   });
 
-  it('switches to a placeholder for sections other stories build', async () => {
+  it('shows the Cart screen to a buyer', async () => {
     await signInAs('buyer');
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('[]', { status: 200 }))));
     fireEvent.click(screen.getByRole('link', { name: 'Cart' }));
-    expect(screen.getByText('Cart is not available yet')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Your cart is empty' })).toBeInTheDocument();
+  });
+
+  it('shows the Orders screen to a CSR', async () => {
+    await signInAs('csr');
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('[]', { status: 200 }))));
+    fireEvent.click(screen.getByRole('link', { name: 'Orders' }));
+    expect(await screen.findByRole('heading', { name: 'No orders have been placed yet' })).toBeInTheDocument();
   });
 
   it('signs out to the sign-in screen without the expired message', () => {
