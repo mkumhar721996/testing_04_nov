@@ -28,9 +28,6 @@ export function OrdersPage({ onSearch }: { onSearch: () => void }) {
         <h1 className="text-lg">Orders</h1>
         {data?.distributorName && <span className="text-muted">{data.distributorName}</span>}
       </div>
-      <p className="text-muted">
-        Orders for your Distributor, newest first. Orders from other Distributors are not shown.
-      </p>
 
       {status === 'loading' && (
         <div className="card order-card" role="status" aria-label="Loading your orders">
