@@ -1,8 +1,8 @@
 import { navForRole } from './nav';
 
 describe('navForRole', () => {
-  it.each(['buyer', 'admin'] as const)('offers search, cart and orders to %s', (role) => {
-    expect(navForRole(role).map((i) => i.key)).toEqual(['search', 'cart', 'orders']);
+  it.each(['buyer', 'admin'] as const)('offers search, quick order, cart and orders to %s', (role) => {
+    expect(navForRole(role).map((i) => i.key)).toEqual(['search', 'quick-order', 'cart', 'orders']);
   });
   it('offers an unknown role no navigation', () => {
     expect(navForRole('foo' as never)).toEqual([]);
