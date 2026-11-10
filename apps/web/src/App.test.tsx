@@ -112,6 +112,13 @@ describe('App', () => {
     expect(screen.getByText('Cart is not available yet')).toBeInTheDocument();
   });
 
+  it('shows the Orders page when Orders is chosen', async () => {
+    await signInAs('buyer');
+    fireEvent.click(screen.getByRole('link', { name: 'Orders' }));
+    expect(screen.getByRole('heading', { level: 1, name: 'Orders' })).toBeInTheDocument();
+    expect(screen.queryByText('Orders is not available yet')).not.toBeInTheDocument();
+  });
+
   it('signs out to the sign-in screen without the expired message', () => {
     sessionStorage.setItem('session', JSON.stringify(sessions.buyer));
     render(<App />);
