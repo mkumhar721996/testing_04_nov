@@ -36,7 +36,7 @@ export function PartSearch({ role, onViewCart }: Props) {
             type="search"
             className="input"
             name="q"
-            placeholder="Part number or description"
+            placeholder="Search"
             aria-label="Part number or description"
             value={text}
             onChange={(e) => setText(e.target.value)}
