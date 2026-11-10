@@ -95,6 +95,10 @@ function Shell({ session }: { session: Session }) {
       }}
       user={session}
       onSignOut={signOut}
+      onSearch={() => {
+        if (id) window.history.pushState({}, '', '/');
+        setSection('search');
+      }}
     >
       {content}
     </AppShell>

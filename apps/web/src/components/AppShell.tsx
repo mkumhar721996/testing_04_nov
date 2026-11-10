@@ -7,10 +7,20 @@ interface AppShellProps {
   onNavigate(key: string): void;
   user: { name: string; title: string };
   onSignOut(): void;
+  onSearch?(query: string): void;
 }
 
-export function AppShell({ children, navItems, currentKey, onNavigate, user, onSignOut }: AppShellProps) {
+export function AppShell({
+  children,
+  navItems,
+  currentKey,
+  onNavigate,
+  user,
+  onSignOut,
+  onSearch,
+}: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
+  const [query, setQuery] = useState('');
   const go = (key: string) => (e: MouseEvent) => {
     e.preventDefault();
     setNavOpen(false);
@@ -30,6 +40,28 @@ export function AppShell({ children, navItems, currentKey, onNavigate, user, onS
           &#9776;
         </button>
         <span className="shell-brand" aria-hidden="true" />
+        {onSearch && (
+          <form
+            className="shell-search"
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSearch(query.trim());
+            }}
+          >
+            <input
+              className="input"
+              type="search"
+              placeholder="Search parts"
+              aria-label="Search parts"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <button className="btn btn-secondary btn-sm" type="submit" aria-label="Search">
+              &#128269;
+            </button>
+          </form>
+        )}
         <button
           className="btn btn-secondary btn-sm"
           type="button"
