@@ -77,6 +77,17 @@ describe('App', () => {
     expect(screen.getByText('Signed in as Sam Buyer, Buyer.')).toBeInTheDocument();
   });
 
+  it('shows the part search page to a buyer, with add to cart', async () => {
+    await signInAs('buyer');
+    expect(screen.getByRole('heading', { level: 1, name: 'Part search' })).toBeInTheDocument();
+    expect(screen.getByRole('searchbox', { name: 'Part number or description' })).toBeInTheDocument();
+  });
+
+  it('offers a CSR no add to cart', async () => {
+    await signInAs('csr');
+    expect(screen.queryByRole('button', { name: /Add .* to cart/ })).not.toBeInTheDocument();
+  });
+
   it.each(['buyer', 'admin'] as const)('offers %s search, cart and orders', async (role) => {
     await signInAs(role);
     expect(navLabels()).toEqual(['Search', 'Cart', 'Orders']);

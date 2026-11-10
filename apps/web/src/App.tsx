@@ -7,6 +7,8 @@ import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
+import { CartProvider } from './features/cart/CartProvider';
+import { PartSearch } from './features/parts/PartSearch';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
 const defectIdFromPath = (path: string) => /^\/items\/([^/]+)\/?$/.exec(path)?.[1] ?? null;
@@ -25,27 +27,15 @@ const ALLOWED_ACTIONS: Record<Role, string[]> = {
   csr: ['Search for parts', "View the Distributor's orders"],
 };
 
-function Search({ session }: { session: Session }) {
+function Search({ session, onViewCart }: { session: Session; onViewCart(): void }) {
   const article = session.role === 'admin' ? 'an' : 'a';
   return (
     <div className="stack">
-      <h1>Search</h1>
+      <h1 className="text-lg">Part search</h1>
       <p className="text-muted">
         Signed in as {session.name}, {session.title}.
       </p>
-      <div className="field">
-        <label htmlFor="part-search">Part number or description</label>
-        <input id="part-search" type="search" />
-      </div>
-      <div>
-        <button className="btn btn-primary" type="button">
-          Search
-        </button>
-      </div>
-      <div className="empty-state">
-        <h2>Search for a part</h2>
-        <p>Enter a part number or description to see matching parts.</p>
-      </div>
+      <PartSearch role={session.role} onViewCart={onViewCart} />
       <section className="card stack">
         <h2>
           What you can do as {article} {session.title}
@@ -82,9 +72,10 @@ function Shell({ session }: { session: Session }) {
   else if (id) content = <DefectPage id={decodeURIComponent(id)} />;
   else if (section === 'cart') content = <Placeholder title="Cart" />;
   else if (section === 'orders') content = <Placeholder title="Orders" />;
-  else content = <Search session={session} />;
+  else content = <Search session={session} onViewCart={() => setSection('cart')} />;
 
   return (
+    <CartProvider>
     <AppShell
       navItems={navForRole(session.role)}
       currentKey={section}
@@ -97,6 +88,7 @@ function Shell({ session }: { session: Session }) {
     >
       {content}
     </AppShell>
+    </CartProvider>
   );
 }
 
