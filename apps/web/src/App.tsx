@@ -7,6 +7,8 @@ import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
+import { CartPage } from './features/orders/CartPage';
+import { OrdersPage } from './features/orders/OrdersPage';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
 const defectIdFromPath = (path: string) => /^\/items\/([^/]+)\/?$/.exec(path)?.[1] ?? null;
@@ -60,14 +62,6 @@ function Search({ session }: { session: Session }) {
   );
 }
 
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="empty-state">
-      <h1>{title} is not available yet</h1>
-    </div>
-  );
-}
-
 function Shell({ session }: { session: Session }) {
   const { signOut } = useSession();
   const [section, setSection] = useState('search');
@@ -80,8 +74,11 @@ function Shell({ session }: { session: Session }) {
   let content;
   if (isComponentSettingsPath(window.location.pathname)) content = <ComponentSettings />;
   else if (id) content = <DefectPage id={decodeURIComponent(id)} />;
-  else if (section === 'cart') content = <Placeholder title="Cart" />;
-  else if (section === 'orders') content = <Placeholder title="Orders" />;
+  else if (section === 'cart' && navForRole(session.role).some((n) => n.key === 'cart'))
+    content = (
+      <CartPage onSearch={() => setSection('search')} onViewOrders={() => setSection('orders')} />
+    );
+  else if (section === 'orders') content = <OrdersPage onSearch={() => setSection('search')} />;
   else content = <Search session={session} />;
 
   return (
