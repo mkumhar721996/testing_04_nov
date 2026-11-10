@@ -7,6 +7,7 @@ import { SignInPage } from './features/auth/SignInPage';
 import { navForRole } from './features/auth/nav';
 import { Dashboard } from './features/dashboard/Dashboard';
 import { DefectPage } from './features/defect/DefectPage';
+import { OrdersPage } from './features/orders/OrdersPage';
 
 // No router is installed: a defect opens at /items/:id, read from the path.
 const defectIdFromPath = (path: string) => /^\/items\/([^/]+)\/?$/.exec(path)?.[1] ?? null;
@@ -81,7 +82,7 @@ function Shell({ session }: { session: Session }) {
   if (isComponentSettingsPath(window.location.pathname)) content = <ComponentSettings />;
   else if (id) content = <DefectPage id={decodeURIComponent(id)} />;
   else if (section === 'cart') content = <Placeholder title="Cart" />;
-  else if (section === 'orders') content = <Placeholder title="Orders" />;
+  else if (section === 'orders') content = <OrdersPage onSearch={() => setSection('search')} />;
   else content = <Search session={session} />;
 
   return (
@@ -94,6 +95,10 @@ function Shell({ session }: { session: Session }) {
       }}
       user={session}
       onSignOut={signOut}
+      onSearch={() => {
+        if (id) window.history.pushState({}, '', '/');
+        setSection('search');
+      }}
     >
       {content}
     </AppShell>

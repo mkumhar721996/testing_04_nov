@@ -50,3 +50,32 @@ describe('AppShell', () => {
     expect(screen.getByRole('navigation', { name: 'Main' })).toHaveClass('is-open');
   });
 });
+
+describe('AppShell header search', () => {
+  const renderWith = (onSearch?: (q: string) => void) =>
+    render(
+      <AppShell
+        navItems={[{ key: 'search', label: 'Search' }]}
+        currentKey="search"
+        onNavigate={() => {}}
+        user={{ name: 'Cy CSR', title: 'CSR' }}
+        onSignOut={() => {}}
+        onSearch={onSearch}
+      >
+        <p>content</p>
+      </AppShell>,
+    );
+
+  it('submits the typed query', () => {
+    const onSearch = vi.fn();
+    renderWith(onSearch);
+    fireEvent.change(screen.getByLabelText('Search parts'), { target: { value: 'brake pad' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+    expect(onSearch).toHaveBeenCalledWith('brake pad');
+  });
+
+  it('is absent without an onSearch handler', () => {
+    renderWith();
+    expect(screen.queryByRole('search')).not.toBeInTheDocument();
+  });
+});
