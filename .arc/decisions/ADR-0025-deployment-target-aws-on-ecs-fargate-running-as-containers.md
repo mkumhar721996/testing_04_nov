@@ -3,8 +3,8 @@ id: ADR-0025
 category: deployment_target
 title: "Deployment target: AWS on ECS Fargate, running as containers (Web App, Core\
   \ API, Background Worker\u2026"
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0036
 component_id: null
 rule: All components deploy as containers on ECS Fargate in us-east-1 with a data
   replica in us-west-2; prod and staging environments.
