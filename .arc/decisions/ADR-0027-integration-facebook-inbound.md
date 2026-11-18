@@ -2,7 +2,7 @@
 id: ADR-0027
 category: integration_surface
 title: 'Integration: Facebook (inbound)'
-status: accepted
+status: retired
 superseded_by: null
 component_id: comp_core_api
 rule: Facebook sign-up is handled server-side; Facebook-supplied data is validated,

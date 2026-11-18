@@ -2,8 +2,8 @@
 id: ADR-0018
 category: component
 title: Relational Database
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0034
 component_id: comp_relational_database
 responsibility: Persistent storage for users, roles, defects, history, Distributor
   and SAP-mapping data, carts, parent/child orders, retry queue and storefront data;
