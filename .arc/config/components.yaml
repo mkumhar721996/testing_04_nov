@@ -54,7 +54,8 @@ components:
     - to: external:stripe-api
       interaction: sync
       status: planned
-      evidence: recommended default, accepted by the human without review; EPIC-024
+      evidence: recommended default, accepted by the human without review; Stripe
+        confirmed for EPIC-024
     stack:
       choices:
         database: PostgreSQL
@@ -149,8 +150,8 @@ components:
     - to: external:sap
       interaction: sync
       status: planned
-      evidence: 'EPIC-011, EPIC-012: three existing SAP instances via ABAP RFC/BAPIs;
-        human: Python implementation'
+      evidence: 'EPIC-011, EPIC-012: three existing SAP instances via ABAP RFC/BAPIs
+        over JCo'
     stack:
       choices:
         language: java

@@ -26,9 +26,10 @@ One line per decision — the rule, not the reasoning. Read the full ADR (`.arc/
 | ADR-0035 | component | accepted | All SAP access goes through the SAP Integration Service, written in Python; no other component holds SAP connections or RFC code. |
 | ADR-0036 | deployment_target | accepted | Application components deploy as containers on ECS Fargate in us-east-1; PostgreSQL runs on RDS with a replica in us-west-2; prod and staging environments. |
 | ADR-0037 | cross_cutting | accepted | Users authenticate only through Entra ID; roles come from the token and are enforced server-side. |
-| ADR-0038 | cross_cutting | accepted | SAP traffic leaves AWS only through the site-to-site VPN; SAP instances are never exposed publicly. |
 | ADR-0039 | cross_cutting | accepted | The banking dashboard shows mock data only; no real card numbers or banking integration are added without a recorded decision. |
 | ADR-0040 | cross_cutting | accepted | Demos, feedback logs and close-out summaries are project activities, not components. |
+| ADR-0041 | nfr | accepted | Federated search waits at most 5 s per SAP instance, then returns partial results flagged as partial. |
+| ADR-0042 | cross_cutting | accepted | SAP traffic leaves AWS only through the site-to-site VPN; SAP instances are never exposed publicly. |
 
 ## Superseded and retired — not binding
 
@@ -51,3 +52,4 @@ One line per decision — the rule, not the reasoning. Read the full ADR (`.arc/
 | ADR-0025 | deployment_target | superseded by ADR-0036 | Deployment target: AWS on ECS Fargate, running as containers (Web App, Core API, Background Worker… |
 | ADR-0027 | integration_surface | retired | Integration: Facebook (inbound) |
 | ADR-0032 | cross_cutting | superseded by ADR-0037 | Cross-cutting: Sign-in and role model |
+| ADR-0038 | cross_cutting | superseded by ADR-0042 | Cross-cutting: SAP network path |

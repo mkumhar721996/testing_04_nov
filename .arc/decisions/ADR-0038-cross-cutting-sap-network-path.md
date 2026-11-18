@@ -2,8 +2,8 @@
 id: ADR-0038
 category: cross_cutting
 title: 'Cross-cutting: SAP network path'
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0042
 component_id: null
 rule: SAP traffic leaves AWS only through the site-to-site VPN; SAP instances are
   never exposed publicly.
