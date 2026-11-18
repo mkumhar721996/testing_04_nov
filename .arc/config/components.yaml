@@ -155,13 +155,13 @@ components:
     stack:
       choices:
         language: python
-        framework: spring-boot
-        package_manager: maven
-        testing_tool_e2e: spring-boot-test-wiremock
-        testing_tool_unit: junit-5
-      notes: language changed from java by the human; framework, package manager and
-        test tools pending confirmation; database not applicable — thin stateless
-        service; styling not applicable — API only
+        framework: fastapi
+        package_manager: uv
+        testing_tool_e2e: pytest-httpx
+        testing_tool_unit: pytest
+      notes: 'Switched from declared Java/Spring Boot to Python: architecture requires
+        PyRFC (SAP NetWeaver RFC SDK). No database (SAP data owned elsewhere); styling
+        not applicable. Integration tests via pytest + httpx with mocked RFC layer.'
   comp_object_storage:
     name: Object Storage
     repo_ref: conn-github-fc7f5117421946948ff7acfbdbf4a7d8
