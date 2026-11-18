@@ -13,11 +13,11 @@ components:
       evidence: accepted architecture seam
     stack:
       choices:
-        styling: tailwind
-        language: typescript
-        framework: react + vite
+        styling: Tailwind CSS
+        language: JavaScript/TypeScript
+        framework: React
         package_manager: pnpm
-        testing_tool_e2e: playwright
+        testing_tool_e2e: Playwright
         testing_tool_unit: vitest
       notes: database not applicable — calls Core API only
   comp_core_api:
@@ -57,11 +57,11 @@ components:
       evidence: recommended default, accepted by the human without review; EPIC-024
     stack:
       choices:
-        database: postgresql
-        language: typescript
-        framework: nestjs
+        database: PostgreSQL
+        language: JavaScript/TypeScript
+        framework: NestJS
         package_manager: pnpm
-        testing_tool_e2e: playwright
+        testing_tool_e2e: Playwright
         testing_tool_unit: vitest
       notes: styling not applicable — API only; e2e via Playwright API testing
   comp_relational_database:
@@ -99,7 +99,7 @@ components:
       evidence: 'EPIC-014: failed child orders are retried through the SAP integration'
     stack:
       choices:
-        language: typescript
+        language: JavaScript/TypeScript
         package_manager: pnpm
         testing_tool_unit: vitest
       notes: uses the shared PostgreSQL database but does not own it; no UI or externally
@@ -143,13 +143,26 @@ components:
     name: SAP Integration Service
     repo_ref: conn-github-fc7f5117421946948ff7acfbdbf4a7d8
     kind: api_service
+    directory: services/sap-integration
     integrations:
     - to: external:sap
       interaction: sync
       status: planned
       evidence: 'EPIC-011, EPIC-012: three existing SAP instances via ABAP RFC/BAPIs
         over JCo'
+    stack:
+      choices:
+        language: java
+        framework: spring-boot
+        package_manager: maven
+        testing_tool_e2e: spring-boot-test-wiremock
+        testing_tool_unit: junit-5
+      notes: database not applicable — retry queue lives in the Core API's PostgreSQL;
+        styling not applicable — no UI
   comp_object_storage:
     name: Object Storage
     repo_ref: conn-github-fc7f5117421946948ff7acfbdbf4a7d8
     kind: managed_service
+    stack:
+      choices:
+        managed_service: Amazon S3
