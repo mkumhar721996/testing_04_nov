@@ -3,8 +3,8 @@ id: ADR-0009
 category: deployment_target
 title: "Deployment target: AWS, running as containers (Web App, Core API and Background\
   \ Worker as\u2026"
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0025
 component_id: null
 decision: AWS, running as containers (Web App, Core API and Background Worker as container
   workloads). Primary region us-east-1 with a cross-region replica of the data in

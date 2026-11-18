@@ -9,6 +9,7 @@ metric: Registered users / peak concurrent users
 threshold: Up to ~500 registered users, ~100 concurrent
 component_id: null
 needs_dedicated_tracking: true
+rule: The system supports ~500 registered and ~100 concurrent users without degradation.
 evidence: 'human: ''Scale: ~500 registered users, ~100 concurrent users'' (confirmed)'
 ---
 

@@ -2,8 +2,8 @@
 id: ADR-0006
 category: component
 title: Email Service
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0021
 component_id: comp_email_service
 responsibility: Sends emails, alerts, invitations, password resets and notifications;
   primary delivery via Microsoft 365 (Microsoft Graph Mail API), with SendGrid as

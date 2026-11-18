@@ -5,6 +5,7 @@ title: 'Integration: Email Providers (outbound)'
 status: accepted
 superseded_by: null
 component_id: comp_email_service
+rule: Email is sent via Microsoft Graph first and falls back to SendGrid only on failure.
 evidence: 'human: ''Primary: Microsoft 365 via Microsoft Graph Mail API; Fallback:
   SendGrid'''
 ---

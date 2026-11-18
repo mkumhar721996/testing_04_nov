@@ -2,8 +2,8 @@
 id: ADR-0003
 category: component
 title: Relational Database
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0018
 component_id: comp_relational_database
 responsibility: Persistent storage for users, application data, settings and audit
   history; runs on PostgreSQL, single tenant, with a cross-region replica.

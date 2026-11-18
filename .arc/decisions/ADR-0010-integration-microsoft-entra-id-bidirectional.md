@@ -5,6 +5,7 @@ title: 'Integration: Microsoft Entra ID (bidirectional)'
 status: accepted
 superseded_by: null
 component_id: comp_authentication_service
+rule: Users sign in only through Entra ID; roles are read from the sign-in token.
 evidence: 'human: ''Recommended: Microsoft Entra ID (Azure AD)'''
 ---
 

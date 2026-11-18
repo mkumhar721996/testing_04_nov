@@ -2,8 +2,8 @@
 id: ADR-0008
 category: nfr
 title: "NFR: Availability \u2014 >= 99.5% per month (~3.6 h downtime)"
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0024
 dimension: Availability
 metric: Monthly uptime of Web App and Core API
 threshold: '>= 99.5% per month (~3.6 h downtime)'

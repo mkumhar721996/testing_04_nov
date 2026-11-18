@@ -2,8 +2,8 @@
 id: ADR-0002
 category: component
 title: Core API
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0017
 component_id: comp_core_api
 responsibility: Business logic, authorization and data access for the application;
   the single API the Web App calls.
