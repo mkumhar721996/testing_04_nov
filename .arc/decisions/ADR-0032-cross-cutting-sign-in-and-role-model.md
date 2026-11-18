@@ -2,8 +2,8 @@
 id: ADR-0032
 category: cross_cutting
 title: 'Cross-cutting: Sign-in and role model'
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0037
 component_id: null
 rule: Users authenticate only through Entra ID; roles come from the token and are
   enforced server-side.

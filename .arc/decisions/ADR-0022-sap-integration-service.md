@@ -2,8 +2,8 @@
 id: ADR-0022
 category: component
 title: SAP Integration Service
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0035
 component_id: comp_sap_integration_service
 responsibility: 'Thin Spring Boot (Java) microservice encapsulating all SAP communication:
   one consolidated JCo library, configurable connections to the three SAP instances,

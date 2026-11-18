@@ -54,7 +54,8 @@ components:
     - to: external:stripe-api
       interaction: sync
       status: planned
-      evidence: recommended default, accepted by the human without review; EPIC-024
+      evidence: recommended default, accepted by the human without review; Stripe
+        confirmed for EPIC-024
     stack:
       choices:
         database: PostgreSQL
@@ -112,7 +113,7 @@ components:
     - to: external:microsoft-entra-id
       interaction: sync
       status: planned
-      evidence: accepted architecture; EPIC-005
+      evidence: 'human: ''Recommended: Microsoft Entra ID (Azure AD)'''
     identity:
       provider: entra
       hosting: managed
@@ -134,7 +135,8 @@ components:
     - to: external:email-providers
       interaction: sync
       status: planned
-      evidence: 'accepted architecture: Microsoft Graph primary, SendGrid fallback'
+      evidence: 'human: ''Primary: Microsoft 365 via Microsoft Graph Mail API; Fallback:
+        SendGrid'''
     stack:
       choices:
         managed_service: Microsoft 365 (Microsoft Graph Mail API), SendGrid as fallback
