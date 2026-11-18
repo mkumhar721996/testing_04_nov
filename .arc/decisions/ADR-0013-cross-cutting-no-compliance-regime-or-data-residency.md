@@ -2,8 +2,8 @@
 id: ADR-0013
 category: cross_cutting
 title: 'Cross-cutting: No compliance regime or data-residency requirement'
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0029
 component_id: null
 decision: 'No compliance framework (GDPR, SOC 2, HIPAA) or residency restriction applies;
   data may live in us-east-1 with a replica in us-west-2. Standard practice still

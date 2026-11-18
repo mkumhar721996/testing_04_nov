@@ -2,7 +2,7 @@
 id: ADR-0012
 category: integration_surface
 title: 'Integration: Salesforce (bidirectional)'
-status: accepted
+status: retired
 superseded_by: null
 component_id: null
 evidence: 'human: ''Salesforce integration will be performed by the Background Worker

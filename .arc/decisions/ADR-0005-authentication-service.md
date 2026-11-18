@@ -2,8 +2,8 @@
 id: ADR-0005
 category: component
 title: Authentication Service
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0020
 component_id: comp_authentication_service
 responsibility: Managed identity provider handling user login, session/token management,
   roles and permissions; the Core API validates its tokens; runs on Microsoft Entra

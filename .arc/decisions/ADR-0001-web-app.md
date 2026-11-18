@@ -2,8 +2,8 @@
 id: ADR-0001
 category: component
 title: Web App
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0016
 component_id: comp_web_app
 responsibility: 'Browser-based UI for all user interactions: login, data management,
   business workflows and reports, for end users, managers/supervisors, administrators

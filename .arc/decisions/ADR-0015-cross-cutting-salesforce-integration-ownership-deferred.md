@@ -2,7 +2,7 @@
 id: ADR-0015
 category: cross_cutting
 title: 'Cross-cutting: Salesforce integration ownership deferred'
-status: accepted
+status: retired
 superseded_by: null
 component_id: null
 decision: Two-way Salesforce sync goes through a dedicated Salesforce integration

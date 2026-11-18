@@ -2,8 +2,8 @@
 id: ADR-0014
 category: cross_cutting
 title: 'Cross-cutting: Single-tenant data model'
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0030
 component_id: null
 decision: One organisation per deployment; no tenant isolation layer (shared tables,
   schema or database per tenant) is needed.

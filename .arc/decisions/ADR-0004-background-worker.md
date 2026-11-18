@@ -2,8 +2,8 @@
 id: ADR-0004
 category: component
 title: Background Worker
-status: accepted
-superseded_by: null
+status: superseded
+superseded_by: ADR-0019
 component_id: comp_background_worker
 responsibility: Scheduled tasks, notification dispatch, report generation, cleanup
   jobs and integrations.
